@@ -14,6 +14,32 @@ candidates, 4 meeting the qualify threshold. (Redrawn from the actual
 `sourcing.cli` console output for readability; every name, score, and skill
 match here is real.)*
 
+## How scoring works
+
+Every candidate gets a score from **0–100**, broken into five weighted
+categories so the number is never a black box — you can see exactly which
+categories a specific candidate scored well or badly on (that's the
+`*_raw` / `*_points` columns in the `--out` CSV, and `reasons` for the
+short version). A candidate is labeled `qualified` when their total meets
+the req's `qualify_threshold` (60 in the example above).
+
+| Category | Weight | What it measures |
+|---|---|---|
+| Skill match | 40 | Overlap between the req's `required_skills` and the candidate's observed skills (GitHub languages/topics, or a LinkedIn `skills` column) |
+| Experience level | 20 | Apparent seniority vs. the req's `min_years_experience` — GitHub account age/stars as a proxy, or LinkedIn's `years_experience` directly |
+| Recent activity | 20 | Active/reachable now vs. a dormant profile — GitHub commits in the last 6 months, decaying to 0 at 24+ |
+| Location fit | 10 | Matches the req's `location`, or always 1.0 if the req is `remote_ok` |
+| Multi-source corroboration | 10 | Bonus when a candidate's identity shows up under more than one source (e.g. a LinkedIn row whose GitHub handle also turned up in the GitHub search) |
+
+This is a deliberately simple, auditable weighted rubric, not a model —
+anyone can read [`SCORING.md`](SCORING.md), read `src/sourcing/scoring.py`,
+and reproduce a score by hand. SCORING.md also documents this rubric's
+known failure modes (survivorship bias toward open-source-visible
+engineers, unverified self-reported fields) — read that before trusting the
+output for anything real. There's a second, experimental scoring pass too
+(three axes instead of one blended number) — see "Two scoring passes, on
+purpose" below.
+
 ## Why it's built this way
 
 - **Cheap/free**: GitHub's Search + REST API is free at the tier this needs
