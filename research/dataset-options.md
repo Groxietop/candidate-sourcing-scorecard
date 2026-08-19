@@ -1,5 +1,13 @@
 # Dataset options — replacing the hand-written LinkedIn CSV
 
+**Update:** `datasetmaster/resumes` and `cnamuangtoun/resume-job-description-fit`
+were pulled in and both scoring passes run against them — see
+[`dataset-run-results.md`](dataset-run-results.md) for what happened and
+the conversion scripts used. The Kaggle and OSS-developer rows in the
+table below were **not** pulled in (Kaggle needs an API token this
+environment doesn't have; the OSS-developer set maps to the GitHub side,
+not the LinkedIn CSV, which is a different piece of work).
+
 `data/fake_linkedin_candidates.csv` is 20 rows invented by hand for this
 proof of concept (see `README.md`). That's fine for exercising the code
 path, but it's thin and it's not blind — whoever wrote it knows the

@@ -13,3 +13,7 @@ touching `SCORING.md`/`EXPERIMENTAL_SCORING.md`.
   replace the hand-written `data/fake_linkedin_candidates.csv` so the demo
   isn't running against invented data, with a concrete recommendation and
   field-mapping.
+- [`dataset-run-results.md`](dataset-run-results.md) — two of those
+  datasets actually pulled in and converted (`scripts/convert_hf_resumes.py`,
+  `scripts/convert_resume_fit_dataset.py`), with both scoring passes run
+  against them and against the hand-written demo data, compared.
