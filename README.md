@@ -93,6 +93,11 @@ worth reading by hand. `reqs/example-onsite-backend-engineer.yaml` exists
 specifically to exercise this: it's not `remote_ok`, so it's the case
 where the traditional pass's location penalty actually fires.
 
+For how both passes compare to actual recruiting-industry practice
+(rubric methodology, commercial sourcing-tool scoring, bias-audit
+regulation) and options for replacing the hand-written demo data with a
+public dataset, see [`research/`](research/).
+
 ## Project layout
 
 ```
@@ -109,6 +114,7 @@ src/sourcing/
   cli_experimental.py    Experimental pass entry point, writes ranked CSV
   compare_passes.py      Diffs a traditional-pass CSV against an experimental one
 tests/                   Unit tests (scoring is fully unit-testable, no network)
+research/                Background research: market-practice comparison, dataset options
 SCORING.md               Traditional pass: the definition of "qualified", spelled out
 EXPERIMENTAL_SCORING.md  Experimental pass: the 3-axis model, spelled out
 ```
