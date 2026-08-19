@@ -52,6 +52,47 @@ python -m sourcing.cli \
 This prints a ranked table to the console and writes the full scorecard
 (every candidate, every sub-score, every reason) to the `--out` CSV.
 
+## Two scoring passes, on purpose
+
+This repo has **two independent scorers** you can run against the same req
+and candidates:
+
+- `sourcing.cli` / `SCORING.md` — the **traditional pass**: one blended
+  0–100 score per candidate.
+- `sourcing.cli_experimental` / `EXPERIMENTAL_SCORING.md` — the
+  **experimental pass**: three separate axes (Foundation / Bonus /
+  Momentum) instead of one number, and fixes a real bias in the
+  traditional pass — it no longer penalizes candidates for not already
+  being local (an unstated assumption they wouldn't relocate) or for a
+  quiet GitHub profile (which might just mean private-repo work or a
+  career break).
+
+They're kept as separate code paths deliberately, writing to separate
+output files, so you can compare them:
+
+```bash
+python -m sourcing.cli \
+  --req reqs/example-onsite-backend-engineer.yaml \
+  --linkedin-csv data/fake_linkedin_candidates.csv \
+  --out out/onsite-traditional.csv
+
+python -m sourcing.cli_experimental \
+  --req reqs/example-onsite-backend-engineer.yaml \
+  --linkedin-csv data/fake_linkedin_candidates.csv \
+  --out out/onsite-experimental.csv
+
+python -m sourcing.compare_passes \
+  --traditional-csv out/onsite-traditional.csv \
+  --experimental-csv out/onsite-experimental.csv \
+  --out out/onsite-comparison.csv
+```
+
+`compare_passes` reports rank movement and any `qualified` status flips
+between the two passes — that's where the two models disagree, and it's
+worth reading by hand. `reqs/example-onsite-backend-engineer.yaml` exists
+specifically to exercise this: it's not `remote_ok`, so it's the case
+where the traditional pass's location penalty actually fires.
+
 ## Project layout
 
 ```
@@ -59,12 +100,17 @@ reqs/                    Open req definitions (YAML) — what "this job needs" m
 data/                    Synthetic demo data (fake LinkedIn export)
 src/sourcing/
   config.py              Loads/validates a req YAML into a Req object
+  candidate.py           The common Candidate shape both sources normalize into
   github_source.py       Live GitHub Search API -> candidates
   linkedin_source.py     CSV -> candidates (real export or synthetic demo file)
-  scoring.py             The rubric: Candidate + Req -> score + breakdown
-  cli.py                 Wires it together, writes ranked CSV
+  scoring.py             Traditional pass: Candidate + Req -> one blended score
+  scoring_experimental.py  Experimental pass: Candidate + Req -> 3 axis scores
+  cli.py                 Traditional pass entry point, writes ranked CSV
+  cli_experimental.py    Experimental pass entry point, writes ranked CSV
+  compare_passes.py      Diffs a traditional-pass CSV against an experimental one
 tests/                   Unit tests (scoring is fully unit-testable, no network)
-SCORING.md               The definition of "qualified", spelled out
+SCORING.md               Traditional pass: the definition of "qualified", spelled out
+EXPERIMENTAL_SCORING.md  Experimental pass: the 3-axis model, spelled out
 ```
 
 ## Writing a real req

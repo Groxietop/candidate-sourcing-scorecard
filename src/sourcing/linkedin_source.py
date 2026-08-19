@@ -10,11 +10,16 @@ example, since this proof of concept was built without a real Recruiter
 seat):
 
     name, headline, current_title, current_company, skills, location,
-    years_experience, currently_open_to_work, github_handle, profile_url
+    years_experience, currently_open_to_work, github_handle, profile_url,
+    certifications, open_source_contributor, volunteer_experience,
+    education_level
 
-`skills` is a ";"-separated list. `currently_open_to_work` and
-`github_handle` may be blank. Extra columns are ignored; missing optional
-columns default to None/blank.
+`skills` is a ";"-separated list. `certifications` is a ";"-separated list
+or free text. Everything after `profile_url` is optional and used only by
+the experimental scorer's bonus axis (see EXPERIMENTAL_SCORING.md) — a real
+Recruiter export won't have these columns, and that's fine: missing/blank
+means "no data", which the experimental scorer treats as 0 contribution,
+never a penalty. Extra columns beyond what's listed here are ignored.
 """
 
 from __future__ import annotations
@@ -52,6 +57,11 @@ def load_linkedin_candidates(csv_path: str | Path) -> list[Candidate]:
                     years_experience=float(years_raw) if years_raw else None,
                     currently_open_to_work=_parse_bool(row.get("currently_open_to_work", "")),
                     github_handle=(row.get("github_handle") or "").strip() or None,
+                    current_title=(row.get("current_title") or "").strip() or None,
+                    certifications=(row.get("certifications") or "").strip() or None,
+                    open_source_contributor=_parse_bool(row.get("open_source_contributor", "")),
+                    volunteer_experience=_parse_bool(row.get("volunteer_experience", "")),
+                    education_level=(row.get("education_level") or "").strip() or None,
                 )
             )
 

@@ -14,6 +14,8 @@ dependencies = [
 
 [project.scripts]
 source-candidates = "sourcing.cli:main"
+source-candidates-experimental = "sourcing.cli_experimental:main"
+compare-passes = "sourcing.compare_passes:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

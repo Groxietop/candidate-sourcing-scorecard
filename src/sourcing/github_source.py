@@ -110,17 +110,46 @@ class GitHubSource:
 
         total_stars = sum(r.get("stargazers_count", 0) for r in repos)
 
+        now = dt.datetime.now(dt.timezone.utc)
         last_pushed = None
+        # Used by the experimental scorer's momentum axis (see
+        # EXPERIMENTAL_SCORING.md): how much of this candidate's repo
+        # activity falls in the last 6 months vs. the 6-18 months before
+        # that. None (not 0) when there are no repos at all, so the scorer
+        # can tell "no data" apart from "went quiet".
+        recent_push_count = 0 if repos else None
+        prior_push_count = 0 if repos else None
         for r in repos:
             pushed_at = r.get("pushed_at")
-            if pushed_at and (last_pushed is None or pushed_at > last_pushed):
+            if not pushed_at:
+                continue
+            if last_pushed is None or pushed_at > last_pushed:
                 last_pushed = pushed_at
+            pushed_dt = dt.datetime.strptime(pushed_at, "%Y-%m-%dT%H:%M:%SZ").replace(
+                tzinfo=dt.timezone.utc
+            )
+            days_ago = (now - pushed_dt).days
+            if days_ago <= 182:
+                recent_push_count += 1
+            elif days_ago <= 548:  # ~18 months
+                prior_push_count += 1
+
         days_since_active = None
         if last_pushed:
             pushed_dt = dt.datetime.strptime(last_pushed, "%Y-%m-%dT%H:%M:%SZ").replace(
                 tzinfo=dt.timezone.utc
             )
-            days_since_active = (dt.datetime.now(dt.timezone.utc) - pushed_dt).days
+            days_since_active = (now - pushed_dt).days
+
+        # Used by the experimental scorer's bonus axis: crude "has this
+        # person documented their work" proxy. A real README check would
+        # cost one extra API call per repo; a non-empty description is a
+        # free stand-in for the purposes of this proof of concept.
+        docs_repo_ratio = (
+            sum(1 for r in repos if (r.get("description") or "").strip()) / len(repos)
+            if repos
+            else None
+        )
 
         account_age_years = None
         created_at = profile.get("created_at")
@@ -140,6 +169,9 @@ class GitHubSource:
             total_stars=total_stars,
             days_since_last_active=days_since_active,
             github_handle=login,
+            recent_push_count=recent_push_count,
+            prior_push_count=prior_push_count,
+            docs_repo_ratio=docs_repo_ratio,
         )
 
 
