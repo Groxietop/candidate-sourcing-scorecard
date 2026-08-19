@@ -1,0 +1,38 @@
+# Same role as example-backend-engineer.yaml, but NOT remote-ok — added
+# specifically to demonstrate the traditional-vs-experimental location
+# handling difference (see EXPERIMENTAL_SCORING.md "the relocation fix").
+# The traditional pass scores non-NY candidates 0 on location here; the
+# experimental pass never penalizes for it at all.
+
+req_id: eng-backend-onsite-001
+title: "Senior Backend Engineer (onsite)"
+
+required_skills:
+  - skill: python
+    weight: high
+  - skill: postgresql
+    weight: high
+  - skill: docker
+    weight: normal
+  - skill: kubernetes
+    weight: normal
+  - skill: aws
+    weight: normal
+
+skill_aliases:
+  postgresql: [postgres, psql]
+  kubernetes: [k8s]
+  aws: [amazon web services]
+
+min_years_experience: 5
+seniority: senior
+
+location: "New York, NY"
+remote_ok: false
+
+qualify_threshold: 60
+
+notes: >
+  Fictional example req, deliberately onsite-only, to exercise and
+  demonstrate the location-scoring difference between the traditional and
+  experimental scoring passes.
