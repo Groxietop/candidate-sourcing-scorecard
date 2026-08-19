@@ -1,0 +1,59 @@
+{
+  "candidates": {
+    "gh:booscaaa": {
+      "matched_skills": [
+        "python",
+        "postgresql"
+      ],
+      "name": "Vin\u00edcius Boscardin",
+      "profile_url": "https://github.com/booscaaa",
+      "qualified": true,
+      "score": 72.9,
+      "source": "github"
+    },
+    "gh:efazati": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Mohammad Efazati",
+      "profile_url": "https://github.com/efazati",
+      "qualified": true,
+      "score": 61.4,
+      "source": "github"
+    },
+    "gh:falconsoft3d": {
+      "matched_skills": [
+        "python",
+        "postgresql",
+        "docker"
+      ],
+      "name": "Marlon Falc\u00f3n Hern\u00e1ndez",
+      "profile_url": "https://github.com/falconsoft3d",
+      "qualified": true,
+      "score": 78.6,
+      "source": "github"
+    },
+    "gh:maryamkalantarii": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Maryam",
+      "profile_url": "https://github.com/MaryamKalantarii",
+      "qualified": false,
+      "score": 54.8,
+      "source": "github"
+    },
+    "gh:saeidjeddi": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Saeed Jeddi | \u0633\u0639\u06cc\u062f \u062c\u062f\u06cc",
+      "profile_url": "https://github.com/saeidjeddi",
+      "qualified": false,
+      "score": 52.0,
+      "source": "github"
+    }
+  },
+  "generated_at": "2026-08-19T18:43:12.700272+00:00",
+  "req_id": "eng-backend-001"
+}
