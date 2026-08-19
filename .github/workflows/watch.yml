@@ -59,7 +59,11 @@ jobs:
           failed_reqs=""
 
           for req_file in reqs/*.yaml; do
-            req_id="$(basename "$req_file" .yaml)"
+            # The req's real id lives inside the YAML (req_id:), which does
+            # not have to match the filename — read it from there so the
+            # report/issue-title path here matches the
+            # data/snapshots/<req_id>/ path watch.py actually writes to.
+            req_id="$(python -c "import sys, yaml; print(yaml.safe_load(open(sys.argv[1]))['req_id'])" "$req_file")"
             report_path="out/watch-report-${req_id}.md"
 
             echo "::group::watch $req_id"
