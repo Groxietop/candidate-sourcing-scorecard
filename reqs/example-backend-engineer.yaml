@@ -1,0 +1,41 @@
+# Example open req. Copy this file to source a real one — no code changes needed.
+
+req_id: eng-backend-001
+title: "Senior Backend Engineer"
+
+# Skills the candidate should show signal for. Order doesn't matter.
+# Mark a skill "weight: high" to count it double in the skill-match score
+# (use this for true must-haves, sparingly — everything high-weight is the
+# same as nothing being high-weight).
+required_skills:
+  - skill: python
+    weight: high
+  - skill: postgresql
+    weight: high
+  - skill: docker
+    weight: normal
+  - skill: kubernetes
+    weight: normal
+  - skill: aws
+    weight: normal
+
+# Known synonyms, so "postgres" and "psql" both count as "postgresql".
+# Add to this as you notice misses — the matcher does not infer synonyms.
+skill_aliases:
+  postgresql: [postgres, psql]
+  kubernetes: [k8s]
+  aws: [amazon web services]
+
+min_years_experience: 5
+seniority: senior          # informational; not separately scored beyond min_years_experience
+
+location: "New York, NY"
+remote_ok: true             # location category auto-scores 1.0 for every candidate when true
+
+# Total score (0-100) at/above which a candidate is labeled "qualified" in the output.
+qualify_threshold: 60
+
+# Free-text notes for whoever reviews the output — not used by the scorer.
+notes: >
+  Fictional example req for the proof-of-concept pipeline. Team owns a
+  Python/Postgres service on AWS; standing up a second on-call rotation.

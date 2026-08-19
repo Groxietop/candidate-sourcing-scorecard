@@ -1,0 +1,30 @@
+# Second example req, to show the pipeline handles more than one role/shape.
+
+req_id: ds-004
+title: "Data Scientist II"
+
+required_skills:
+  - skill: python
+    weight: high
+  - skill: pandas
+    weight: normal
+  - skill: scikit-learn
+    weight: normal
+  - skill: sql
+    weight: high
+
+skill_aliases:
+  scikit-learn: [sklearn]
+  sql: [postgresql, mysql, postgres]
+
+min_years_experience: 2
+seniority: mid
+
+location: "Remote"
+remote_ok: true
+
+qualify_threshold: 55
+
+notes: >
+  Fictional example req. Lower experience bar and threshold than the
+  backend req, to demonstrate per-req tuning.

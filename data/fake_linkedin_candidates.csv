@@ -1,0 +1,21 @@
+name,headline,current_title,current_company,skills,location,years_experience,currently_open_to_work,github_handle,profile_url
+Alex Rivera,Backend engineer building payments infra,Senior Backend Engineer,Acme Corp,python;postgresql;docker;kubernetes,New York NY,7,true,alexrivera-dev,https://linkedin.example/in/alex-rivera
+Jordan Kim,Full-stack dev who loves Postgres,Software Engineer II,Globex Corporation,javascript;react;postgres;node,Brooklyn NY,3,false,,https://linkedin.example/in/jordan-kim
+Priya Chandrasekaran,Data scientist / ML,Data Scientist,Initech,python;pandas;scikit-learn;sql,Remote,4,true,priyac-ml,https://linkedin.example/in/priya-chandrasekaran
+Sam O'Brien,Platform engineer,Staff Platform Engineer,Hooli,python;aws;kubernetes;terraform,San Francisco CA,9,false,,https://linkedin.example/in/sam-obrien
+Taylor Nguyen,Junior dev learning the ropes,Junior Software Engineer,Pied Piper,javascript;html;css,Remote,1,true,taylornguyen,https://linkedin.example/in/taylor-nguyen
+Morgan Osei,Backend + data pipelines,Backend Engineer,Cyberdyne Systems,python;sql;postgresql;airflow,New York NY,5,true,morganosei,https://linkedin.example/in/morgan-osei
+Casey Fitzgerald,Analytics engineer,Analytics Engineer,Wonka Industries,sql;python;pandas;dbt,Remote,3,false,,https://linkedin.example/in/casey-fitzgerald
+Robin Alvarez,DevOps / SRE,Senior SRE,Wayne Enterprises,docker;kubernetes;aws;python,New York NY,6,true,robin-alvarez,https://linkedin.example/in/robin-alvarez
+Jamie Whitfield,"Frontend focused, but some backend",Software Engineer,Acme Corp,javascript;react;typescript,Remote,2,false,,https://linkedin.example/in/jamie-whitfield
+Drew Kapoor,ML engineer,Machine Learning Engineer,Globex Corporation,python;scikit-learn;pandas;pytorch,Remote,4,true,drewkapoor,https://linkedin.example/in/drew-kapoor
+Reese Thornton,Backend engineer,Backend Engineer,Initech,python;postgresql;docker,New York NY,4,true,,https://linkedin.example/in/reese-thornton
+Skyler Adeyemi,Data scientist,Senior Data Scientist,Hooli,python;sql;pandas;scikit-learn,Remote,6,false,skyleradeyemi,https://linkedin.example/in/skyler-adeyemi
+Quinn Bergstrom,New grad SWE,Software Engineer I,Pied Piper,java;python,Remote,0,true,,https://linkedin.example/in/quinn-bergstrom
+Avery Delacroix,Cloud/infra engineer,Cloud Engineer,Cyberdyne Systems,aws;kubernetes;docker;python,New York NY,8,false,averyd,https://linkedin.example/in/avery-delacroix
+Peyton Mwangi,Data analyst moving into DS,Data Analyst,Wonka Industries,sql;python;pandas,Remote,2,true,,https://linkedin.example/in/peyton-mwangi
+Rowan Castellanos,Backend engineer,Senior Backend Engineer,Wayne Enterprises,python;postgresql;kubernetes;aws,New York NY,6,true,rowancastellanos,https://linkedin.example/in/rowan-castellanos
+Emerson Vasquez,Product-minded engineer,Software Engineer,Acme Corp,ruby;rails;postgresql,Remote,5,false,,https://linkedin.example/in/emerson-vasquez
+Finley Okonkwo,Data engineer,Data Engineer,Globex Corporation,python;sql;airflow;docker,Remote,3,true,finleyo,https://linkedin.example/in/finley-okonkwo
+Harper Lindqvist,Backend + data scientist hybrid,Backend / DS Hybrid,Initech,python;postgresql;pandas;scikit-learn;sql,New York NY,5,true,,https://linkedin.example/in/harper-lindqvist
+Dakota Abernathy,Early career backend dev,Software Engineer I,Hooli,python;docker,Remote,1,false,,https://linkedin.example/in/dakota-abernathy
