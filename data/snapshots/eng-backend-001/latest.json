@@ -1,5 +1,37 @@
 {
   "candidates": {
+    "gh:akiamuradev": {
+      "matched_skills": [
+        "python",
+        "postgresql",
+        "docker"
+      ],
+      "name": "Artem",
+      "profile_url": "https://github.com/akiamuradev",
+      "qualified": true,
+      "score": 69.6,
+      "source": "github"
+    },
+    "gh:alexander-fedorovtsev": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Alexander Fedorovtsev",
+      "profile_url": "https://github.com/Alexander-Fedorovtsev",
+      "qualified": false,
+      "score": 34.0,
+      "source": "github"
+    },
+    "gh:bi32": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Alex",
+      "profile_url": "https://github.com/bi32",
+      "qualified": false,
+      "score": 46.8,
+      "source": "github"
+    },
     "gh:booscaaa": {
       "matched_skills": [
         "python",
@@ -33,6 +65,46 @@
       "score": 78.6,
       "source": "github"
     },
+    "gh:giovannalinodev": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Giovanna Lino",
+      "profile_url": "https://github.com/giovannalinodev",
+      "qualified": false,
+      "score": 50.0,
+      "source": "github"
+    },
+    "gh:gregdotdev": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Gregorio",
+      "profile_url": "https://github.com/gregdotdev",
+      "qualified": false,
+      "score": 46.7,
+      "source": "github"
+    },
+    "gh:hamidreza1983": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "hamid reza",
+      "profile_url": "https://github.com/hamidreza1983",
+      "qualified": false,
+      "score": 52.0,
+      "source": "github"
+    },
+    "gh:lucas-dantas10": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Lucas Dantas",
+      "profile_url": "https://github.com/lucas-dantas10",
+      "qualified": false,
+      "score": 54.9,
+      "source": "github"
+    },
     "gh:maryamkalantarii": {
       "matched_skills": [
         "python"
@@ -41,6 +113,28 @@
       "profile_url": "https://github.com/MaryamKalantarii",
       "qualified": false,
       "score": 54.8,
+      "source": "github"
+    },
+    "gh:munisisazade": {
+      "matched_skills": [
+        "python",
+        "postgresql",
+        "docker"
+      ],
+      "name": "Munis Isazade",
+      "profile_url": "https://github.com/munisisazade",
+      "qualified": true,
+      "score": 78.6,
+      "source": "github"
+    },
+    "gh:rmmariano": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Mariano",
+      "profile_url": "https://github.com/rmmariano",
+      "qualified": false,
+      "score": 36.1,
       "source": "github"
     },
     "gh:saeidjeddi": {
@@ -52,8 +146,18 @@
       "qualified": false,
       "score": 52.0,
       "source": "github"
+    },
+    "gh:zulfikar-ditya": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Zulfikar Ditya",
+      "profile_url": "https://github.com/zulfikar-ditya",
+      "qualified": false,
+      "score": 58.2,
+      "source": "github"
     }
   },
-  "generated_at": "2026-08-19T18:43:12.700272+00:00",
+  "generated_at": "2026-08-19T18:52:48.747999+00:00",
   "req_id": "eng-backend-001"
 }
