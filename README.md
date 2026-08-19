@@ -7,6 +7,13 @@ broken down so a human can see exactly why a candidate ranked where they did.
 **Status: proof of concept.** Live GitHub data, synthetic LinkedIn data (see
 below). Not connected to any real ATS or real LinkedIn account.
 
+![A ranked candidate table from a real sourcing.cli run against reqs/example-backend-engineer.yaml: 12 live GitHub candidates, 4 meeting the qualify threshold, with score, qualified status, and matched skills per row.](docs/scorecard-run.png)
+
+*A real run against `reqs/example-backend-engineer.yaml` — 12 live GitHub
+candidates, 4 meeting the qualify threshold. (Redrawn from the actual
+`sourcing.cli` console output for readability; every name, score, and skill
+match here is real.)*
+
 ## Why it's built this way
 
 - **Cheap/free**: GitHub's Search + REST API is free at the tier this needs
