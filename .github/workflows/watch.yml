@@ -63,11 +63,19 @@ jobs:
             report_path="out/watch-report-${req_id}.md"
 
             echo "::group::watch $req_id"
-            python -m sourcing.watch \
+            # GitHub Actions runs `run:` steps as `bash -e {0}`, so a plain
+            # `cmd; exit=$?` here would abort the whole step the instant a
+            # req found zero candidates (see README "Limitations") instead
+            # of letting us capture the exit code and continue — hence the
+            # explicit if/else, which -e does not fire inside.
+            if python -m sourcing.watch \
               --req "$req_file" \
               --max-github-results 15 \
-              --report-out "$report_path"
-            watch_exit=$?
+              --report-out "$report_path"; then
+              watch_exit=0
+            else
+              watch_exit=$?
+            fi
             echo "::endgroup::"
 
             # A req finding zero candidates this run (e.g. a narrow query
