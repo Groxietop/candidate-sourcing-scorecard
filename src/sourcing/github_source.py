@@ -33,6 +33,35 @@ _KNOWN_LANGUAGES = {
 }
 
 
+def build_search_query(req: Req) -> str:
+    """Build the GitHub `search/users` query string for a req. Pulled out
+    as a pure function so it's unit-testable without hitting the network.
+    """
+    query_parts = []
+
+    language_skill = next(
+        (rs.skill for rs in req.required_skills if rs.skill in _KNOWN_LANGUAGES), None
+    )
+    if language_skill:
+        query_parts.append(f"language:{language_skill}")
+
+    # A req that's remote_ok shouldn't narrow the search to its office
+    # location at all — that excludes exactly the remote candidates the req
+    # says it's fine hiring. Only apply the location qualifier for reqs that
+    # actually require it.
+    if req.location and not req.remote_ok and req.location.strip().lower() != "remote":
+        # GitHub's location qualifier is a loose match against the free-text
+        # profile location field, so this is best-effort, not exact.
+        query_parts.append(f'location:"{req.location.split(",")[0].strip()}"')
+
+    # Everything else goes in as free text, matched loosely against bio/login.
+    free_text_skills = [rs.skill for rs in req.required_skills if rs.skill != language_skill]
+    query_parts.extend(free_text_skills[:2])  # keep the query from getting too narrow
+
+    query_parts.append("type:user")
+    return " ".join(query_parts)
+
+
 class GitHubSource:
     def __init__(self, token: str | None = None, timeout: float = 10.0):
         self.session = requests.Session()
@@ -62,31 +91,14 @@ class GitHubSource:
 
     def search_users(self, req: Req, max_results: int) -> list[str]:
         """Return up to max_results GitHub logins matching the req's skills/location."""
-        query_parts = []
-
-        language_skill = next(
-            (rs.skill for rs in req.required_skills if rs.skill in _KNOWN_LANGUAGES), None
-        )
-        if language_skill:
-            query_parts.append(f"language:{language_skill}")
-
-        if req.location and req.location.strip().lower() != "remote":
-            # GitHub's location qualifier is a loose match against the free-text
-            # profile location field, so this is best-effort, not exact.
-            query_parts.append(f'location:"{req.location.split(",")[0].strip()}"')
-
-        # Everything else goes in as free text, matched loosely against bio/login.
-        free_text_skills = [
-            rs.skill for rs in req.required_skills if rs.skill != language_skill
-        ]
-        query_parts.extend(free_text_skills[:2])  # keep the query from getting too narrow
-
-        query_parts.append("type:user")
-        query = " ".join(query_parts)
-
         resp = self._get(
             f"{API_ROOT}/search/users",
-            params={"q": query, "sort": "followers", "order": "desc", "per_page": max_results},
+            params={
+                "q": build_search_query(req),
+                "sort": "followers",
+                "order": "desc",
+                "per_page": max_results,
+            },
         )
         if resp is None:
             return []

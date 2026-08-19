@@ -93,11 +93,58 @@ worth reading by hand. `reqs/example-onsite-backend-engineer.yaml` exists
 specifically to exercise this: it's not `remote_ok`, so it's the case
 where the traditional pass's location penalty actually fires.
 
+## Watch mode: this runs itself
+
+Everything above is one-shot: you run it, you get a CSV. `sourcing.watch` is
+the same pipeline wired to a scheduler, with state, so the repo tracks a req's
+candidate pool over time instead of forgetting it the moment the command
+exits.
+
+```bash
+python -m sourcing.watch \
+  --req reqs/example-backend-engineer.yaml \
+  --report-out out/watch-report.md
+```
+
+Each run:
+
+1. Gathers and scores candidates exactly like `sourcing.cli` (same shared
+   pipeline, `src/sourcing/pipeline.py` — they can't drift apart).
+2. Loads the last snapshot for this req from `data/snapshots/<req_id>/latest.json`.
+3. Diffs the two: new candidates, `qualified` flips in either direction,
+   candidates whose score moved by ≥5 points, and candidates that dropped
+   out of the results entirely.
+4. Writes the new snapshot back and a markdown report of what changed.
+
+`.github/workflows/watch.yml` schedules this for real, with zero paid
+infrastructure:
+
+- Runs weekly (`workflow_dispatch` for on-demand, `repository_dispatch` so an
+  external webhook can trigger a re-scan too) via GitHub Actions' free tier.
+- Loops over every req in `reqs/*.yaml`.
+- Commits the updated snapshots back to the repo — `git log data/snapshots/`
+  is the audit trail.
+- When something actually changed, opens (or comments on) a GitHub Issue
+  titled `Candidate pool watch: <req_id>` with the diff — that's the part a
+  human doesn't have to remember to check for.
+- A req that finds zero candidates in a given run (a narrow query is a
+  normal, expected outcome of GitHub's free-text user search, not a fault)
+  is logged as a warning and skipped, not treated as a failed run.
+
+This is the difference between "a script that makes a CSV" and a small
+pipeline: it has memory (the snapshots), a trigger it doesn't need a human to
+press (cron + webhook), and it takes action on what it finds (the Issue) —
+all inside GitHub's free tier.
+
 ## Project layout
 
 ```
 reqs/                    Open req definitions (YAML) — what "this job needs" means
 data/                    Synthetic demo data (fake LinkedIn export)
+data/snapshots/          Watch mode's state: one JSON snapshot per req, per run
+.github/workflows/
+  ci.yml                 Runs the test suite on every push/PR
+  watch.yml              Scheduled/webhook-triggered watch run (see "Watch mode" above)
 src/sourcing/
   config.py              Loads/validates a req YAML into a Req object
   candidate.py           The common Candidate shape both sources normalize into
@@ -105,9 +152,12 @@ src/sourcing/
   linkedin_source.py     CSV -> candidates (real export or synthetic demo file)
   scoring.py             Traditional pass: Candidate + Req -> one blended score
   scoring_experimental.py  Experimental pass: Candidate + Req -> 3 axis scores
+  pipeline.py            Shared gather-and-score pipeline used by cli.py and watch.py
+  store.py               Watch mode's snapshot persistence + diffing
   cli.py                 Traditional pass entry point, writes ranked CSV
   cli_experimental.py    Experimental pass entry point, writes ranked CSV
   compare_passes.py      Diffs a traditional-pass CSV against an experimental one
+  watch.py               Scheduled entry point: score, diff vs. last snapshot, report
 tests/                   Unit tests (scoring is fully unit-testable, no network)
 SCORING.md               Traditional pass: the definition of "qualified", spelled out
 EXPERIMENTAL_SCORING.md  Experimental pass: the 3-axis model, spelled out
@@ -138,3 +188,8 @@ in that file. No code changes needed to source a new req.
   already know.
 - This is not a compliance/EEO tool. Don't use the score as the sole basis
   for a hiring decision — it's a triage aid for building an outreach list.
+- GitHub's `search/users` free-text terms are AND'd against a user's
+  login/bio, so a req with several required skills can produce a genuinely
+  narrow query and return few or zero results some runs — that's a search
+  limitation, not a pipeline error (see "Watch mode" above for how the
+  scheduled run handles it).

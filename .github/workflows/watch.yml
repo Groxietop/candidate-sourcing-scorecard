@@ -1,0 +1,127 @@
+name: Watch candidate pools
+
+# The stateful, scheduled counterpart to the CLI: re-runs sourcing for every
+# req in reqs/*.yaml, diffs each run against the last one (data/snapshots/),
+# commits the new snapshots, and opens/updates one GitHub Issue per req with
+# whatever changed. No human has to remember to run this — it just watches.
+#
+# Free to run: GitHub Actions' free tier (public repos: unlimited minutes;
+# private repos: 2,000 min/month) covers this easily at a weekly cadence,
+# and the GitHub REST/Search API calls stay well inside the authenticated
+# rate limit for a handful of reqs.
+
+on:
+  schedule:
+    - cron: "17 13 * * 1" # every Monday ~13:17 UTC — off the top of the hour on purpose
+  workflow_dispatch: {} # manual "Run workflow" button
+  repository_dispatch:
+    types: [watch] # lets an external event (e.g. a webhook -> Actions bridge) trigger a re-scan on demand
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: watch-candidate-pools
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Ensure the candidate-watch label exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "candidate-watch" \
+            --color "0E8A16" \
+            --description "Opened/updated by the watch.yml scheduled workflow" \
+            2>/dev/null || true
+
+      - name: Run watch for every req and file/update an issue per req
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          snapshots_changed=0
+          failed_reqs=""
+
+          for req_file in reqs/*.yaml; do
+            req_id="$(basename "$req_file" .yaml)"
+            report_path="out/watch-report-${req_id}.md"
+
+            echo "::group::watch $req_id"
+            python -m sourcing.watch \
+              --req "$req_file" \
+              --max-github-results 15 \
+              --report-out "$report_path"
+            watch_exit=$?
+            echo "::endgroup::"
+
+            # A req finding zero candidates this run (e.g. a narrow query
+            # against GitHub's free-text user search) is a normal outcome,
+            # not a pipeline failure — skip it and keep watching the rest.
+            if [ "$watch_exit" -ne 0 ] || [ ! -f "$report_path" ]; then
+              echo "::warning::watch failed for $req_id (exit $watch_exit) — skipping"
+              failed_reqs="$failed_reqs $req_id"
+              continue
+            fi
+
+            status="$(head -n1 "$report_path" | sed -n 's/<!-- watch-status: \(.*\) -->/\1/p')"
+            echo "status for $req_id: $status"
+
+            if ! git diff --quiet -- "data/snapshots/${req_id}"; then
+              snapshots_changed=1
+            fi
+
+            if [ "$status" != "changed" ]; then
+              continue
+            fi
+
+            title="Candidate pool watch: ${req_id}"
+            body_file="$report_path"
+            existing_issue="$(gh issue list --state open --search "in:title \"$title\"" --json number,title \
+              --jq ".[] | select(.title == \"$title\") | .number" | head -n1)"
+
+            if [ -n "$existing_issue" ]; then
+              echo "Updating issue #$existing_issue for $req_id"
+              gh issue comment "$existing_issue" --body-file "$body_file"
+            else
+              echo "Opening new issue for $req_id"
+              gh issue create --title "$title" --body-file "$body_file" --label "candidate-watch"
+            fi
+          done
+
+          if [ -n "$failed_reqs" ]; then
+            echo "::warning::reqs with no candidates this run:$failed_reqs"
+          fi
+
+          echo "SNAPSHOTS_CHANGED=$snapshots_changed" >> "$GITHUB_ENV"
+
+      - name: Commit updated snapshots
+        if: env.SNAPSHOTS_CHANGED == '1'
+        run: |
+          git config user.name "candidate-watch-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/snapshots
+          git commit -m "watch: update candidate snapshots [skip ci]"
+          git push
+
+      - name: Upload run artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: watch-reports
+          path: out/watch-*.md
+          retention-days: 30
