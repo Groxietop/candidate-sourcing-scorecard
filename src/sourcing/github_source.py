@@ -104,6 +104,77 @@ class GitHubSource:
             return []
         return [item["login"] for item in resp.json().get("items", [])]
 
+    def search_by_repositories(self, req: Req, max_results: int) -> list[str]:
+        """Find candidates by the repositories they own, not their bio text.
+
+        GitHub's *user* search only matches free text against login, name and
+        bio, so a req listing several skills produces a query almost nobody
+        satisfies -- `pandas scikit-learn` needs both words written in someone's
+        profile. Two of the three example reqs returned literally zero results
+        that way, permanently.
+
+        Repository search matches what people actually build. One query per
+        required skill, unioned, with each owner scored by how many distinct
+        required skills their repositories covered -- which is a far better
+        skill signal than whether they mentioned it in a bio.
+        """
+        language = next(
+            (rs.skill for rs in req.required_skills if rs.skill in _KNOWN_LANGUAGES),
+            None,
+        )
+        hits: dict[str, set[str]] = {}
+
+        for required in req.required_skills:
+            terms = []
+            if language and required.skill != language:
+                terms.append(f"language:{language}")
+            # `topic:` matches curated repo topics; falling back to free text
+            # keeps skills that aren't established topics from dropping out.
+            terms.append(f"topic:{required.skill}")
+            query = " ".join(terms)
+
+            resp = self._get(
+                f"{API_ROOT}/search/repositories",
+                params={
+                    "q": query,
+                    "sort": "stars",
+                    "order": "desc",
+                    "per_page": min(max_results * 2, 50),
+                },
+            )
+            if resp is None:
+                continue
+
+            for item in resp.json().get("items", []):
+                owner = item.get("owner") or {}
+                # Organisations own a lot of popular repositories and are not
+                # candidates.
+                if owner.get("type") != "User":
+                    continue
+                login = owner.get("login")
+                if login:
+                    hits.setdefault(login, set()).add(required.skill)
+
+        # Most distinct required skills covered wins.
+        ranked = sorted(hits.items(), key=lambda kv: len(kv[1]), reverse=True)
+        return [login for login, _skills in ranked[:max_results]]
+
+    def discover(self, req: Req, max_results: int) -> list[str]:
+        """Repository-based discovery, falling back to user search.
+
+        Repository search is the better signal and the default. User search
+        still runs when it turns up nothing, since a req whose skills are not
+        established GitHub topics can legitimately come back empty.
+        """
+        logins = self.search_by_repositories(req, max_results)
+        if logins:
+            return logins
+        print(
+            "  [github] repository search found nobody; falling back to user search",
+            file=sys.stderr,
+        )
+        return self.search_users(req, max_results)
+
     def fetch_candidate(self, login: str) -> Candidate | None:
         profile_resp = self._get(f"{API_ROOT}/users/{login}")
         if profile_resp is None:
@@ -189,7 +260,7 @@ class GitHubSource:
 
 def fetch_github_candidates(req: Req, token: str | None, max_results: int = 15) -> list[Candidate]:
     source = GitHubSource(token=token)
-    logins = source.search_users(req, max_results=max_results)
+    logins = source.discover(req, max_results=max_results)
     candidates = []
     for login in logins:
         candidate = source.fetch_candidate(login)

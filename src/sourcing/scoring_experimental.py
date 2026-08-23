@@ -29,6 +29,8 @@ import math
 from dataclasses import dataclass, field
 
 from .candidate import Candidate
+from .evidence import Evidence, Signal
+from .triage import TriageResult, triage
 from .config import Req
 from .scoring import _experience, _recency, _skill_match, _tokenize_location
 
@@ -74,6 +76,16 @@ class ExperimentalScoreResult:
     matched_skills: list[str]
     qualified: bool
     reasons: list[str] = field(default_factory=list)
+    evidence: Evidence = field(default_factory=Evidence)
+    triage: TriageResult | None = None
+
+    @property
+    def tier(self):
+        return self.triage.tier if self.triage else None
+
+    @property
+    def stays_in_queue(self) -> bool:
+        return self.triage.stays_in_queue if self.triage else True
 
     def as_row(self) -> dict:
         return {
@@ -85,6 +97,7 @@ class ExperimentalScoreResult:
             "qualified": self.qualified,
             "matched_skills": ";".join(self.matched_skills),
             "profile_url": self.candidate.profile_url,
+            **(self.triage.as_row() if self.triage is not None else {}),
             "reasons": " | ".join(self.reasons),
         }
 
@@ -101,7 +114,7 @@ def _location_bonus(candidate: Candidate, req: Req) -> float:
 
 def foundation_score(candidate: Candidate, req: Req) -> tuple[float, list[str]]:
     skill_score, matched = _skill_match(candidate, req)
-    experience_score = _experience(candidate, req)
+    experience_score, _observed, _detail = _experience(candidate, req)
     total = skill_score * FOUNDATION_WEIGHTS["skill_match"] + experience_score * FOUNDATION_WEIGHTS["experience"]
     return total, matched
 
@@ -111,7 +124,7 @@ def _github_bonus(candidate: Candidate, req: Req) -> tuple[float, dict[str, floa
     candidate_canon = {req.canonical_skill(s) for s in candidate.skills}
     breadth = min(len(candidate_canon - required) / 5, 1.0)
 
-    activity = _recency(candidate)
+    activity, _activity_observed, _activity_detail = _recency(candidate)
 
     docs = candidate.docs_repo_ratio if candidate.docs_repo_ratio is not None else 0.0
 
@@ -234,6 +247,27 @@ def score_candidate_experimental(candidate: Candidate, req: Req) -> Experimental
     fired_momentum = [k for k, v in momentum_subs.items() if v > 0]
     reasons.append(f"momentum signals: {', '.join(fired_momentum) if fired_momentum else 'none'}")
 
+    # The experimental pass gates on Foundation alone (see
+    # EXPERIMENTAL_SCORING.md), so triage runs against the same two
+    # categories that produce it. Bonus and Momentum are reward-only and
+    # deliberately never contribute to setting anyone aside.
+    _skill_value, _matched = _skill_match(candidate, req)
+    experience_value, experience_seen, experience_detail = _experience(candidate, req)
+    evidence = Evidence(
+        signals=[
+            Signal(
+                "skill_match",
+                _skill_value,
+                bool(candidate.skills),
+                f"matched {len(matched)}/{len(req.required_skills)} required skills"
+                if candidate.skills
+                else "no public skill signal found",
+            ),
+            Signal("experience", experience_value, experience_seen, experience_detail),
+        ]
+    )
+    decision = triage(foundation, req, evidence, FOUNDATION_WEIGHTS, matched)
+
     return ExperimentalScoreResult(
         candidate=candidate,
         foundation=foundation,
@@ -242,6 +276,8 @@ def score_candidate_experimental(candidate: Candidate, req: Req) -> Experimental
         matched_skills=matched,
         qualified=foundation >= req.qualify_threshold,
         reasons=reasons,
+        evidence=evidence,
+        triage=decision,
     )
 
 
