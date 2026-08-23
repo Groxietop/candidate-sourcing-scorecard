@@ -1,67 +1,287 @@
 {
   "candidates": {
-    "gh:bregman-arie": {
-      "matched_skills": [
-        "python",
-        "docker",
-        "kubernetes",
-        "aws"
-      ],
-      "name": "Arie Bregman",
-      "profile_url": "https://github.com/bregman-arie",
-      "qualified": true,
-      "score": 78.6,
-      "source": "github"
-    },
-    "gh:budtmo": {
+    "gh:alexrivera-dev": {
       "matched_skills": [
         "python",
         "postgresql",
-        "docker",
-        "kubernetes",
-        "aws"
-      ],
-      "name": "Budi Utomo",
-      "profile_url": "https://github.com/budtmo",
-      "qualified": true,
-      "score": 90.0,
-      "source": "github"
-    },
-    "gh:cyc2018": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "CyC2018",
-      "profile_url": "https://github.com/CyC2018",
-      "qualified": false,
-      "score": 41.4,
-      "source": "github"
-    },
-    "gh:donnemartin": {
-      "matched_skills": [
-        "python",
-        "postgresql",
-        "aws"
-      ],
-      "name": "Donne Martin",
-      "profile_url": "https://github.com/donnemartin",
-      "qualified": true,
-      "score": 78.6,
-      "source": "github"
-    },
-    "gh:vinta": {
-      "matched_skills": [
-        "python",
         "docker",
         "kubernetes"
       ],
-      "name": "Vinta Chen",
-      "profile_url": "https://github.com/vinta",
+      "name": "Alex Rivera",
+      "profile_url": "https://linkedin.example/in/alex-rivera",
+      "qualified": true,
+      "score": 84.3,
+      "source": "linkedin"
+    },
+    "gh:averyd": {
+      "matched_skills": [
+        "python",
+        "docker",
+        "kubernetes",
+        "aws"
+      ],
+      "name": "Avery Delacroix",
+      "profile_url": "https://linkedin.example/in/avery-delacroix",
+      "qualified": true,
+      "score": 68.6,
+      "source": "linkedin"
+    },
+    "gh:drewkapoor": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Drew Kapoor",
+      "profile_url": "https://linkedin.example/in/drew-kapoor",
+      "qualified": false,
+      "score": 57.4,
+      "source": "linkedin"
+    },
+    "gh:finleyo": {
+      "matched_skills": [
+        "python",
+        "docker"
+      ],
+      "name": "Finley Okonkwo",
+      "profile_url": "https://linkedin.example/in/finley-okonkwo",
+      "qualified": false,
+      "score": 59.1,
+      "source": "linkedin"
+    },
+    "gh:morganosei": {
+      "matched_skills": [
+        "python",
+        "postgresql"
+      ],
+      "name": "Morgan Osei",
+      "profile_url": "https://linkedin.example/in/morgan-osei",
       "qualified": true,
       "score": 72.9,
-      "source": "github"
+      "source": "linkedin"
+    },
+    "gh:priyac-ml": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Priya Chandrasekaran",
+      "profile_url": "https://linkedin.example/in/priya-chandrasekaran",
+      "qualified": false,
+      "score": 57.4,
+      "source": "linkedin"
+    },
+    "gh:robin-alvarez": {
+      "matched_skills": [
+        "python",
+        "docker",
+        "kubernetes",
+        "aws"
+      ],
+      "name": "Robin Alvarez",
+      "profile_url": "https://linkedin.example/in/robin-alvarez",
+      "qualified": true,
+      "score": 78.6,
+      "source": "linkedin"
+    },
+    "gh:rowancastellanos": {
+      "matched_skills": [
+        "python",
+        "postgresql",
+        "kubernetes",
+        "aws"
+      ],
+      "name": "Rowan Castellanos",
+      "profile_url": "https://linkedin.example/in/rowan-castellanos",
+      "qualified": true,
+      "score": 84.3,
+      "source": "linkedin"
+    },
+    "gh:skyleradeyemi": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Skyler Adeyemi",
+      "profile_url": "https://linkedin.example/in/skyler-adeyemi",
+      "qualified": false,
+      "score": 51.4,
+      "source": "linkedin"
+    },
+    "gh:taylornguyen": {
+      "matched_skills": [],
+      "name": "Taylor Nguyen",
+      "profile_url": "https://linkedin.example/in/taylor-nguyen",
+      "qualified": false,
+      "score": 34.0,
+      "source": "linkedin"
+    },
+    "name:ben kowalski": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Ben Kowalski",
+      "profile_url": "https://linkedin.example/in/ben-kowalski",
+      "qualified": false,
+      "score": 41.4,
+      "source": "linkedin"
+    },
+    "name:casey fitzgerald": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Casey Fitzgerald",
+      "profile_url": "https://linkedin.example/in/casey-fitzgerald",
+      "qualified": false,
+      "score": 43.4,
+      "source": "linkedin"
+    },
+    "name:dakota abernathy": {
+      "matched_skills": [
+        "python",
+        "docker"
+      ],
+      "name": "Dakota Abernathy",
+      "profile_url": "https://linkedin.example/in/dakota-abernathy",
+      "qualified": false,
+      "score": 41.1,
+      "source": "linkedin"
+    },
+    "name:emerson vasquez": {
+      "matched_skills": [
+        "postgresql"
+      ],
+      "name": "Emerson Vasquez",
+      "profile_url": "https://linkedin.example/in/emerson-vasquez",
+      "qualified": false,
+      "score": 51.4,
+      "source": "linkedin"
+    },
+    "name:harper lindqvist": {
+      "matched_skills": [
+        "python",
+        "postgresql"
+      ],
+      "name": "Harper Lindqvist",
+      "profile_url": "https://linkedin.example/in/harper-lindqvist",
+      "qualified": true,
+      "score": 72.9,
+      "source": "linkedin"
+    },
+    "name:jamie whitfield": {
+      "matched_skills": [],
+      "name": "Jamie Whitfield",
+      "profile_url": "https://linkedin.example/in/jamie-whitfield",
+      "qualified": false,
+      "score": 28.0,
+      "source": "linkedin"
+    },
+    "name:jordan kim": {
+      "matched_skills": [
+        "postgresql"
+      ],
+      "name": "Jordan Kim",
+      "profile_url": "https://linkedin.example/in/jordan-kim",
+      "qualified": false,
+      "score": 43.4,
+      "source": "linkedin"
+    },
+    "name:marcus webb": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Marcus Webb",
+      "profile_url": "https://linkedin.example/in/marcus-webb",
+      "qualified": false,
+      "score": 41.4,
+      "source": "linkedin"
+    },
+    "name:nadia osei": {
+      "matched_skills": [
+        "python",
+        "postgresql",
+        "aws"
+      ],
+      "name": "Nadia Osei",
+      "profile_url": "https://linkedin.example/in/nadia-osei",
+      "qualified": false,
+      "score": 58.6,
+      "source": "linkedin"
+    },
+    "name:peyton mwangi": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Peyton Mwangi",
+      "profile_url": "https://linkedin.example/in/peyton-mwangi",
+      "qualified": false,
+      "score": 49.4,
+      "source": "linkedin"
+    },
+    "name:priya raman": {
+      "matched_skills": [
+        "python",
+        "postgresql"
+      ],
+      "name": "Priya Raman",
+      "profile_url": "https://linkedin.example/in/priya-raman",
+      "qualified": false,
+      "score": 52.9,
+      "source": "linkedin"
+    },
+    "name:quinn bergstrom": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Quinn Bergstrom",
+      "profile_url": "https://linkedin.example/in/quinn-bergstrom",
+      "qualified": false,
+      "score": 41.4,
+      "source": "linkedin"
+    },
+    "name:reese thornton": {
+      "matched_skills": [
+        "python",
+        "postgresql",
+        "docker"
+      ],
+      "name": "Reese Thornton",
+      "profile_url": "https://linkedin.example/in/reese-thornton",
+      "qualified": true,
+      "score": 74.6,
+      "source": "linkedin"
+    },
+    "name:sam o'brien": {
+      "matched_skills": [
+        "python",
+        "kubernetes",
+        "aws"
+      ],
+      "name": "Sam O'Brien",
+      "profile_url": "https://linkedin.example/in/sam-obrien",
+      "qualified": true,
+      "score": 62.9,
+      "source": "linkedin"
+    },
+    "name:sofia almeida": {
+      "matched_skills": [
+        "python",
+        "docker"
+      ],
+      "name": "Sofia Almeida",
+      "profile_url": "https://linkedin.example/in/sofia-almeida",
+      "qualified": false,
+      "score": 47.1,
+      "source": "linkedin"
+    },
+    "name:tom\u00e1s herrera": {
+      "matched_skills": [
+        "python",
+        "kubernetes"
+      ],
+      "name": "Tom\u00e1s Herrera",
+      "profile_url": "https://linkedin.example/in/tomas-herrera",
+      "qualified": false,
+      "score": 47.1,
+      "source": "linkedin"
     }
   },
-  "generated_at": "2026-08-23T19:07:36.303279+00:00",
+  "generated_at": "2026-08-23T19:16:28.939549+00:00",
   "req_id": "eng-backend-001"
 }

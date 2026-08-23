@@ -4,6 +4,9 @@ __pycache__/
 .env
 out/*.csv
 out/*.md
+
+# Local recruiter decision log and calibration output
+data/feedback/
 .pytest_cache/
 *.egg-info/
 .DS_Store

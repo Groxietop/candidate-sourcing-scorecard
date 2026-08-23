@@ -146,8 +146,11 @@ On that offline demo pool: 26 `candidate.create`, 26 `candidate.addTag`, 26 `can
 
 ```bash
 python -m sourcing.watch --req reqs/example-backend-engineer.yaml \
+  --linkedin-csv data/fake_linkedin_candidates.csv \
   --report-out out/watch-report.md
 ```
+
+Without `GITHUB_TOKEN` this can exit 1 on GitHub's anonymous rate limit before writing a report. Set a token, or add `--skip-github` to run it against the demo export alone.
 
 `.github/workflows/watch.yml` runs that weekly, diffs against the last snapshot in `data/snapshots/`, commits the new state, and opens a GitHub Issue when the pool changes. Cron plus `workflow_dispatch` and `repository_dispatch`. Free tier.
 
