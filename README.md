@@ -51,19 +51,21 @@ The whole idea is in that screenshot. Both candidates score **59** against a bar
 
 Same score, different amounts of knowledge. A binary can't tell them apart and cuts both.
 
-### Setup
+---
+
+## 3. Running it
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .
 
-# Optional but recommended — without it you get GitHub's very low
-# unauthenticated rate limit. Any token with no scopes works.
+# Optional. Without it you get GitHub's very low unauthenticated rate
+# limit. Any token with no scopes works.
 export GITHUB_TOKEN=...
 ```
 
-### Try it
+Score a req and get both a CSV and a tiered review queue:
 
 ```bash
 python -m sourcing.cli \
@@ -73,13 +75,23 @@ python -m sourcing.cli \
   --review-out out/review.md
 ```
 
+Add `--skip-github` for a fully offline run against the demo data. That one is deterministic — 26 candidates, 10 kept in the queue, 16 set aside:
+
+```
+tiers: strong 5 · review 3 · caveated 2 · discard 16
+```
+
 There's also a **[working review-queue UI](https://claude.ai/code/artifact/f7ef6f6f-671f-444b-9d7e-d17ff3608233)** — job description, per-candidate detail, and Advance / Not-a-fit verdicts that persist and sync between viewers.
 
 ![Review queue header: the job description the model scores against, the standing rule that a candidate is only set aside on positive evidence of a miss, and a scoreboard showing missed rate, precision, recall and candidates reviewed.](docs/ui-overview.png)
 
+```bash
+pytest -q     # 107 tests
+```
+
 ---
 
-## 3. Measuring whether it works
+## 4. Measuring whether it works
 
 Every verdict gets recorded, and metrics come only from recorded decisions ([`feedback.py`](src/sourcing/feedback.py)). An empty log says "no decisions yet" instead of showing a made-up number.
 
@@ -92,27 +104,29 @@ missed_rate = of the candidates I set aside,
 
 That's the false-negative rate on my own discard pile. It's the only metric that gets worse when the tool gets overconfident.
 
+Feedback also drives recalibration ([`calibration.py`](src/sourcing/calibration.py)). Repeated "not senior enough" rejections on advanced candidates means the experience signal is reading high, so it proposes a weight cut with the evidence attached. **Never auto-applied** — a model that silently re-weights itself is how you end up with a bias nobody can point at.
+
 ```bash
 python -m sourcing.cli_feedback record --candidate "Nadia Osei" --req eng-backend-001 \
   --tier caveated --verdict advance --reason actually_strong
 
-python -m sourcing.cli_feedback report
-python -m sourcing.cli_feedback calibrate
+python -m sourcing.cli_feedback report      # metrics, and who we wrongly set aside
+python -m sourcing.cli_feedback calibrate   # proposed weight changes, unapplied
 ```
 
 The UI holds verdicts in its own page state; the CLI log is the durable one. `cli_feedback import-verdicts --file ui.json` bridges them.
 
-Feedback also drives recalibration ([`calibration.py`](src/sourcing/calibration.py)). Repeated "not senior enough" rejections on advanced candidates means the experience signal is reading high, so it proposes a weight cut with the evidence attached. **Never auto-applied** — a model that silently re-weights itself is how you end up with a bias nobody can point at.
-
 ---
 
-## 4. Integrations
+## 5. Integrations
 
 | | Status |
 |---|---|
 | **GitHub** | Live. Repository/topic search. |
 | **LinkedIn Recruiter** ([code](src/sourcing/integrations/linkedin_recruiter.py)) | Seat-export connector, tracks provenance and staleness |
 | **Ashby ATS** ([code](src/sourcing/integrations/ashby.py)) | Built against Ashby's real API. No tenant behind this repo, so it dry-runs by default |
+
+The Ashby adapter **never rejects anyone in the ATS.** Set-aside candidates still get pushed, tagged `scorecard:caveated-do-not-cut`, with the reasoning in a note. A rejection in the system of record is where an automated call becomes irreversible. The tool's opinion travels with the candidate; the decision doesn't.
 
 ```bash
 # Dry run by default — no credentials needed, prints every request it would send
@@ -124,23 +138,26 @@ python -m sourcing.cli_push --req reqs/example-backend-engineer.yaml \
 python -m sourcing.cli_push --req ... --job-id ... --send
 ```
 
-On the demo pool that produces 26 `candidate.create`, 26 `candidate.addTag`, 26 `candidate.createNote` — and only 8 `application.create`. No rejection call appears, because there isn't one.
-
-The Ashby adapter **never rejects anyone in the ATS.** Set-aside candidates still get pushed, tagged `scorecard:caveated-do-not-cut`, with the reasoning in a note. A rejection in the system of record is where an automated call becomes irreversible. The tool's opinion travels with the candidate; the decision doesn't.
+On that offline demo pool: 26 `candidate.create`, 26 `candidate.addTag`, 26 `candidate.createNote` — and only 8 `application.create`. Everyone lands in the ATS with their reasoning; only the advanced tiers become active applications. No rejection call appears, because there isn't one.
 
 ---
 
-## 5. It runs itself
+## 6. It runs itself
 
-`.github/workflows/watch.yml` re-runs sourcing weekly, diffs against the last snapshot in `data/snapshots/`, commits the new state, and opens a GitHub Issue when the pool changes. Cron plus `workflow_dispatch` and `repository_dispatch`. Free tier.
+```bash
+python -m sourcing.watch --req reqs/example-backend-engineer.yaml \
+  --report-out out/watch-report.md
+```
+
+`.github/workflows/watch.yml` runs that weekly, diffs against the last snapshot in `data/snapshots/`, commits the new state, and opens a GitHub Issue when the pool changes. Cron plus `workflow_dispatch` and `repository_dispatch`. Free tier.
 
 ---
 
-## 6. Choices I made, and why
+## 7. Choices I made, and why
 
 **Discovery favors people who build in public.** Repo search finds candidates by what they ship, so engineers under strict IP policies are harder to surface. The triage layer can't fix this one — you can't caveat someone you never found.
 
-**"Set aside" is still a judgement call.** 17 of 36 in the demo run land there. Defensible (observed skills, real missing must-have) but that pile is worth reading.
+**"Set aside" is still a judgement call.** 16 of 26 in the offline demo run land there. Defensible (observed skills, real missing must-have) but that pile is worth reading.
 
 **Corroboration was a hidden penalty.** SCORING.md called it "not a penalty, just no bonus," but on a 100-point scale with a 60-point bar, scoring 0 is a 10-point penalty for only existing on GitHub. Now excluded from counting as a measured weakness.
 
@@ -163,7 +180,3 @@ The Ashby adapter **never rejects anyone in the ATS.** Set-aside candidates stil
 | Recency | 20 | Active and reachable now |
 | Location | 10 | Matches `location`, or 1.0 when `remote_ok` |
 | Corroboration | 10 | Bonus for appearing in more than one source |
-
-```bash
-pytest -q     # 107 tests
-```
