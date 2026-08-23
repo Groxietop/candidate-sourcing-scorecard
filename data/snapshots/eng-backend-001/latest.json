@@ -1,163 +1,67 @@
 {
   "candidates": {
-    "gh:akiamuradev": {
+    "gh:bregman-arie": {
+      "matched_skills": [
+        "python",
+        "docker",
+        "kubernetes",
+        "aws"
+      ],
+      "name": "Arie Bregman",
+      "profile_url": "https://github.com/bregman-arie",
+      "qualified": true,
+      "score": 78.6,
+      "source": "github"
+    },
+    "gh:budtmo": {
       "matched_skills": [
         "python",
         "postgresql",
-        "docker"
+        "docker",
+        "kubernetes",
+        "aws"
       ],
-      "name": "Artem",
-      "profile_url": "https://github.com/akiamuradev",
+      "name": "Budi Utomo",
+      "profile_url": "https://github.com/budtmo",
       "qualified": true,
-      "score": 69.6,
+      "score": 90.0,
       "source": "github"
     },
-    "gh:alexander-fedorovtsev": {
+    "gh:cyc2018": {
       "matched_skills": [
         "python"
       ],
-      "name": "Alexander Fedorovtsev",
-      "profile_url": "https://github.com/Alexander-Fedorovtsev",
+      "name": "CyC2018",
+      "profile_url": "https://github.com/CyC2018",
       "qualified": false,
-      "score": 34.0,
+      "score": 41.4,
       "source": "github"
     },
-    "gh:bi32": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Alex",
-      "profile_url": "https://github.com/bi32",
-      "qualified": false,
-      "score": 46.8,
-      "source": "github"
-    },
-    "gh:booscaaa": {
+    "gh:donnemartin": {
       "matched_skills": [
         "python",
-        "postgresql"
+        "postgresql",
+        "aws"
       ],
-      "name": "Vin\u00edcius Boscardin",
-      "profile_url": "https://github.com/booscaaa",
+      "name": "Donne Martin",
+      "profile_url": "https://github.com/donnemartin",
+      "qualified": true,
+      "score": 78.6,
+      "source": "github"
+    },
+    "gh:vinta": {
+      "matched_skills": [
+        "python",
+        "docker",
+        "kubernetes"
+      ],
+      "name": "Vinta Chen",
+      "profile_url": "https://github.com/vinta",
       "qualified": true,
       "score": 72.9,
       "source": "github"
-    },
-    "gh:efazati": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Mohammad Efazati",
-      "profile_url": "https://github.com/efazati",
-      "qualified": true,
-      "score": 61.4,
-      "source": "github"
-    },
-    "gh:falconsoft3d": {
-      "matched_skills": [
-        "python",
-        "postgresql",
-        "docker"
-      ],
-      "name": "Marlon Falc\u00f3n Hern\u00e1ndez",
-      "profile_url": "https://github.com/falconsoft3d",
-      "qualified": true,
-      "score": 78.6,
-      "source": "github"
-    },
-    "gh:giovannalinodev": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Giovanna Lino",
-      "profile_url": "https://github.com/giovannalinodev",
-      "qualified": false,
-      "score": 50.0,
-      "source": "github"
-    },
-    "gh:gregdotdev": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Gregorio",
-      "profile_url": "https://github.com/gregdotdev",
-      "qualified": false,
-      "score": 46.7,
-      "source": "github"
-    },
-    "gh:hamidreza1983": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "hamid reza",
-      "profile_url": "https://github.com/hamidreza1983",
-      "qualified": false,
-      "score": 52.0,
-      "source": "github"
-    },
-    "gh:lucas-dantas10": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Lucas Dantas",
-      "profile_url": "https://github.com/lucas-dantas10",
-      "qualified": false,
-      "score": 54.9,
-      "source": "github"
-    },
-    "gh:maryamkalantarii": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Maryam",
-      "profile_url": "https://github.com/MaryamKalantarii",
-      "qualified": false,
-      "score": 54.8,
-      "source": "github"
-    },
-    "gh:munisisazade": {
-      "matched_skills": [
-        "python",
-        "postgresql",
-        "docker"
-      ],
-      "name": "Munis Isazade",
-      "profile_url": "https://github.com/munisisazade",
-      "qualified": true,
-      "score": 78.6,
-      "source": "github"
-    },
-    "gh:rmmariano": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Mariano",
-      "profile_url": "https://github.com/rmmariano",
-      "qualified": false,
-      "score": 36.1,
-      "source": "github"
-    },
-    "gh:saeidjeddi": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Saeed Jeddi | \u0633\u0639\u06cc\u062f \u062c\u062f\u06cc",
-      "profile_url": "https://github.com/saeidjeddi",
-      "qualified": false,
-      "score": 52.0,
-      "source": "github"
-    },
-    "gh:zulfikar-ditya": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Zulfikar Ditya",
-      "profile_url": "https://github.com/zulfikar-ditya",
-      "qualified": false,
-      "score": 58.2,
-      "source": "github"
     }
   },
-  "generated_at": "2026-08-19T18:52:48.747999+00:00",
+  "generated_at": "2026-08-23T19:07:36.303279+00:00",
   "req_id": "eng-backend-001"
 }

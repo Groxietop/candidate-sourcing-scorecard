@@ -16,6 +16,8 @@ dependencies = [
 source-candidates = "sourcing.cli:main"
 source-candidates-experimental = "sourcing.cli_experimental:main"
 compare-passes = "sourcing.compare_passes:main"
+push-to-ashby = "sourcing.cli_push:main"
+sourcing-feedback = "sourcing.cli_feedback:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

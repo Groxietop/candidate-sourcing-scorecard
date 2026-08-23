@@ -51,6 +51,18 @@ The whole idea is in that screenshot. Both candidates score **59** against a bar
 
 Same score, different amounts of knowledge. A binary can't tell them apart and cuts both.
 
+### Setup
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+pip install -e .
+
+# Optional but recommended — without it you get GitHub's very low
+# unauthenticated rate limit. Any token with no scopes works.
+export GITHUB_TOKEN=...
+```
+
 ### Try it
 
 ```bash
@@ -80,6 +92,16 @@ missed_rate = of the candidates I set aside,
 
 That's the false-negative rate on my own discard pile. It's the only metric that gets worse when the tool gets overconfident.
 
+```bash
+python -m sourcing.cli_feedback record --candidate "Nadia Osei" --req eng-backend-001 \
+  --tier caveated --verdict advance --reason actually_strong
+
+python -m sourcing.cli_feedback report
+python -m sourcing.cli_feedback calibrate
+```
+
+The UI holds verdicts in its own page state; the CLI log is the durable one. `cli_feedback import-verdicts --file ui.json` bridges them.
+
 Feedback also drives recalibration ([`calibration.py`](src/sourcing/calibration.py)). Repeated "not senior enough" rejections on advanced candidates means the experience signal is reading high, so it proposes a weight cut with the evidence attached. **Never auto-applied** — a model that silently re-weights itself is how you end up with a bias nobody can point at.
 
 ---
@@ -90,7 +112,19 @@ Feedback also drives recalibration ([`calibration.py`](src/sourcing/calibration.
 |---|---|
 | **GitHub** | Live. Repository/topic search. |
 | **LinkedIn Recruiter** ([code](src/sourcing/integrations/linkedin_recruiter.py)) | Seat-export connector, tracks provenance and staleness |
-| **Ashby ATS** ([code](src/sourcing/integrations/ashby.py)) | Built against Ashby's real API. No tenant behind this repo, so `--dry-run` prints exact payloads |
+| **Ashby ATS** ([code](src/sourcing/integrations/ashby.py)) | Built against Ashby's real API. No tenant behind this repo, so it dry-runs by default |
+
+```bash
+# Dry run by default — no credentials needed, prints every request it would send
+python -m sourcing.cli_push --req reqs/example-backend-engineer.yaml \
+  --linkedin-csv data/fake_linkedin_candidates.csv --skip-github \
+  --job-id <ashby-job-id> --show-payloads
+
+# For real: needs ASHBY_API_KEY
+python -m sourcing.cli_push --req ... --job-id ... --send
+```
+
+On the demo pool that produces 26 `candidate.create`, 26 `candidate.addTag`, 26 `candidate.createNote` — and only 8 `application.create`. No rejection call appears, because there isn't one.
 
 The Ashby adapter **never rejects anyone in the ATS.** Set-aside candidates still get pushed, tagged `scorecard:caveated-do-not-cut`, with the reasoning in a note. A rejection in the system of record is where an automated call becomes irreversible. The tool's opinion travels with the candidate; the decision doesn't.
 
@@ -131,5 +165,5 @@ The Ashby adapter **never rejects anyone in the ATS.** Set-aside candidates stil
 | Corroboration | 10 | Bonus for appearing in more than one source |
 
 ```bash
-pytest -q     # 95 tests
+pytest -q     # 107 tests
 ```
