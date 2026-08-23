@@ -1,228 +1,258 @@
 # Candidate Sourcing Scorecard
 
-A small, transparent tool that takes an open req (job requisition) and produces
-a **ranked, scored candidate list** from public signals — with every score
-broken down so a human can see exactly why a candidate ranked where they did.
+A sourcing tool built on one rule: **it is inexcusable to discard the dream
+candidate.** Everything below follows from that.
 
-**Status: proof of concept.** Live GitHub data, synthetic LinkedIn data (see
-below). Not connected to any real ATS or real LinkedIn account.
+---
 
-![A ranked candidate table from a real sourcing.cli run against reqs/example-backend-engineer.yaml: 12 live GitHub candidates, 4 meeting the qualify threshold, with score, qualified status, and matched skills per row.](docs/scorecard-run.png)
+## 1. The problem
 
-*A real run against `reqs/example-backend-engineer.yaml` — 12 live GitHub
-candidates, 4 meeting the qualify threshold. (Redrawn from the actual
-`sourcing.cli` console output for readability; every name, score, and skill
-match here is real.)*
+Every automated screening tool ends the same way — a score, a threshold, a
+binary. Above the line you exist; below it you were never there. Nobody ever
+sees who got cut, and nothing records why.
 
-## How scoring works
+That is tolerable when the score is right. The trouble is that a score built
+from data you don't have looks exactly like a score built from data you do.
 
-Every candidate gets a score from **0–100**, broken into five weighted
-categories so the number is never a black box — you can see exactly which
-categories a specific candidate scored well or badly on (that's the
-`*_raw` / `*_points` columns in the `--out` CSV, and `reasons` for the
-short version). A candidate is labeled `qualified` when their total meets
-the req's `qualify_threshold` (60 in the example above).
+Screening errors are also wildly asymmetric, and threshold tools treat them as
+if they weren't:
 
-| Category | Weight | What it measures |
+| | Cost |
+|---|---|
+| **False positive** — a mediocre candidate reaches a human | ~30 seconds of a recruiter's time |
+| **False negative** — the right person is silently removed | The hire that never happened. Nobody ever learns it went wrong. |
+
+A tool tuned to minimise total error will happily trade the second for the
+first. That is the wrong trade, and it is the default.
+
+---
+
+## 2. The problem, concretely
+
+Here is the exact bug this repo had. From the original scorer:
+
+```python
+def _experience(candidate, req):
+    if candidate.years_experience is not None:
+        ...                       # measured
+    if candidate.account_age_years is not None:
+        ...                       # measured (a proxy)
+    return 0.5                    # "no experience signal available"
+```
+
+`_recency` and `_location` did the same thing. Then:
+
+```python
+qualified = total >= req.qualify_threshold
+```
+
+**`0.5` for "we have no idea" is indistinguishable from `0.5` for "we measured
+this and it's mediocre."** The threshold consumes both as if they were
+evidence.
+
+So take a real candidate: a senior backend engineer at a company with a strict
+IP policy. All their work is in private repos. No public activity, few stars,
+a thin account, no location on their profile.
+
+- experience → `0.5` (guess) → 10 pts
+- recency → `0.5` (guess) → 10 pts
+- location → `0.5` (guess) → 5 pts
+- corroboration → `0.0` → 0 pts
+
+They land in the 40s against a bar of 60 and are dropped — on a score that is
+**~60% guesswork**. Nobody is told. There is no record.
+
+That's the dream candidate, and the system was built to lose them.
+
+*(A second instance of the same failure, found while testing: SQL is not a
+GitHub language or a common repo topic, so it is nearly invisible in public
+data. The tool flagged Sebastian Raschka — who wrote the standard ML textbook —
+as "missing must-have: sql".)*
+
+---
+
+## 3. The fix
+
+### Make "did we measure this?" a first-class fact
+
+Every category now carries its value **and** whether that value was observed
+([`evidence.py`](src/sourcing/evidence.py)). **Confidence** is the share of
+scoring weight backed by real observation.
+
+### One hard rule
+
+> A candidate may only be set aside on **positive evidence of a miss**, never
+> on the absence of evidence.
+
+Absence of evidence about a person is a fact about our data collection. It is
+not a fact about them.
+
+### Four tiers, not a cut
+
+([`triage.py`](src/sourcing/triage.py))
+
+| Tier | Meaning |
+|---|---|
+| **Strong** | Clears the bar on measured evidence |
+| **Review** | Over the bar, but partly on guesswork, or missing a must-have |
+| **Caveated** | Under the bar — **but the weakness rests on signals we never observed.** Never auto-removed. Always carries the reason *and* the reason that reason may be wrong. |
+| **Set aside** | We observed the relevant signal and it genuinely came up short |
+
+Only the last is removed from the queue, and every set-aside candidate is
+listed in full with its reasoning so the judgement can be audited and
+overruled.
+
+### It says why it might be wrong
+
+Each caveat names a specific, documented failure mode — not a hedge:
+
+> *"a quiet public profile can mean private-repo work, a career break,
+> parental leave, or simply not coding in public"*
+
+![Two candidates in the review queue, both scoring 59 points. Nadia Osei is Caveated at 80% measured with experience flagged as scored on guesswork; Finley Okonkwo is Set aside at 100% measured with an observed missing must-have.](docs/ui-caveated.png)
+
+**This is the entire argument in one screenshot.** Two candidates, both scoring
+**59** against a bar of 60.
+
+- **Nadia Osei** — 80% measured. The missing 20% is *experience*, and the
+  caveat says exactly why that matters: seniority is inferred from GitHub
+  account age, which says nothing about a veteran who opened an account last
+  year. She stays in the queue.
+- **Finley Okonkwo** — 100% measured. We observed the skill set and PostgreSQL
+  genuinely isn't in it. That is evidence, so this one is set aside — and even
+  then the caveat still runs, because public repos hide the skills people use
+  at work.
+
+Identical scores. Different amounts of *knowledge*. The old binary could not
+tell them apart and cut both.
+
+### Try it
+
+```bash
+python -m sourcing.cli \
+  --req reqs/example-backend-engineer.yaml \
+  --linkedin-csv data/fake_linkedin_candidates.csv \
+  --out out/candidates.csv \
+  --review-out out/review.md
+```
+
+There is also a **[working review-queue UI](https://claude.ai/code/artifact/f7ef6f6f-671f-444b-9d7e-d17ff3608233)** —
+job description, per-candidate profile detail, and Advance / Not-a-fit
+verdicts that persist and sync between viewers.
+
+![Review queue header: the job description the model scores against, the standing rule that a candidate is only set aside on positive evidence of a miss, and a scoreboard showing missed rate, precision, recall and candidates reviewed.](docs/ui-overview.png)
+
+*The scoreboard is computed from recorded verdicts. Before anyone decides
+anything it reads "no decisions yet" rather than a number — here it is showing
+five real verdicts. **Missed rate leads** because it is the number that gets
+worse when the tool becomes overconfident.*
+
+---
+
+## 4. Measuring whether it works
+
+A screening tool that can't be checked is just an opinion with a number on it.
+([`feedback.py`](src/sourcing/feedback.py))
+
+Every recruiter verdict is recorded, and the metrics are computed **only from
+recorded decisions**. With an empty log the dashboard says *"no decisions
+yet"* rather than a plausible-looking percentage.
+
+The headline metric is deliberately **not** precision. Precision asks "of the
+people we advanced, how many were good" — a question you can ace by advancing
+almost nobody. Given the philosophy, the number that matters is its inverse:
+
+```
+missed_rate = of the candidates we set aside,
+              how many did the recruiter say were actually good?
+```
+
+That is the false-negative rate on our own discard pile, and it is the only
+metric that gets *worse* when the tool becomes overconfident.
+
+Feedback also drives real recalibration ([`calibration.py`](src/sourcing/calibration.py)):
+repeated "not senior enough" rejections on candidates we advanced means the
+experience signal is reading high, and the tool proposes a weight cut with the
+evidence attached. **Proposals are never auto-applied** — a screening model
+that silently re-weights itself is how a hiring tool acquires a bias nobody
+can point at.
+
+---
+
+## 5. Integrations
+
+| Integration | Status |
+|---|---|
+| **GitHub** | Live. Repository/topic search — see the caveat below. |
+| **LinkedIn Recruiter** ([`linkedin_recruiter.py`](src/sourcing/integrations/linkedin_recruiter.py)) | Seat-export connector with provenance and staleness handling |
+| **Ashby ATS** ([`ashby.py`](src/sourcing/integrations/ashby.py)) | Built against Ashby's real API; no tenant behind this repo, so `--dry-run` shows exact payloads |
+
+The Ashby adapter has one rule baked in: **it never rejects anyone in the
+ATS.** Set-aside candidates are still pushed, tagged
+`scorecard:caveated-do-not-cut`, and annotated with the full reasoning —
+because pushing a rejection into the system of record is the moment an
+automated judgement becomes irreversible. The tool's opinion travels with the
+candidate; the decision does not.
+
+---
+
+## 6. It runs itself
+
+`.github/workflows/watch.yml` re-runs sourcing weekly, diffs against the last
+snapshot in `data/snapshots/`, commits the new state, and opens a GitHub Issue
+when the pool changes. Cron, `workflow_dispatch`, and `repository_dispatch`
+triggers; entirely on the free tier.
+
+---
+
+## 7. Caveats — the choices I made, and why
+
+**Discovery is biased toward people who build in public.** Repository search
+finds candidates by what they ship. Engineers under strict IP policies are
+systematically harder to find — and this is a *discovery* bias the triage layer
+cannot repair, because you can't caveat someone you never surfaced.
+
+**"Set aside" is still a judgement, and it can be wrong.** 17 of 36 candidates
+in the demo run land there. The tier is defensible — observed skills, genuine
+missing must-have — but the discard pile deserves reading.
+
+**Corroboration used to be a hidden penalty.** SCORING.md called it "not a
+penalty, just no bonus", but on a 100-point scale with a 60-point bar, scoring
+0 functions as a 10-point penalty for only existing on GitHub. It's now
+excluded from counting as a measured weakness.
+
+**The demo LinkedIn export is fictional, and was too clean.** Every scored
+field was populated, which meant the Caveated tier could never fire — the exact
+behaviour the tool exists for was untestable. Sparse rows were added, because
+real exports have gaps.
+
+**No LLM, deliberately** ([`escalation.py`](src/sourcing/escalation.py)).
+Designed and priced, switched off. The escalation queue would be the
+**Caveated tier alone** — that tier *is* the ambiguity, so LLM spend would land
+only where judgement is genuinely required rather than scaling with pool size.
+If enabled, an LLM could only ever move a candidate *up* a tier; model output
+is not the "positive evidence of a miss" the discard rule requires.
+
+**Not a compliance or EEO tool.** Treat the ranking as a triage aid for
+building an outreach list, never as the basis for a hiring decision.
+
+---
+
+## Scoring rubric
+
+0–100 across five weighted categories. Full rubric in
+[`SCORING.md`](SCORING.md); a second, experimental three-axis pass in
+[`EXPERIMENTAL_SCORING.md`](EXPERIMENTAL_SCORING.md). Both now produce tiers
+rather than a binary.
+
+| Category | Weight | Measures |
 |---|---|---|
-| Skill match | 40 | Overlap between the req's `required_skills` and the candidate's observed skills (GitHub languages/topics, or a LinkedIn `skills` column) |
-| Experience level | 20 | Apparent seniority vs. the req's `min_years_experience` — GitHub account age/stars as a proxy, or LinkedIn's `years_experience` directly |
-| Recent activity | 20 | Active/reachable now vs. a dormant profile — GitHub commits in the last 6 months, decaying to 0 at 24+ |
-| Location fit | 10 | Matches the req's `location`, or always 1.0 if the req is `remote_ok` |
-| Multi-source corroboration | 10 | Bonus when a candidate's identity shows up under more than one source (e.g. a LinkedIn row whose GitHub handle also turned up in the GitHub search) |
-
-This is a deliberately simple, auditable weighted rubric, not a model —
-anyone can read [`SCORING.md`](SCORING.md), read `src/sourcing/scoring.py`,
-and reproduce a score by hand. SCORING.md also documents this rubric's
-known failure modes (survivorship bias toward open-source-visible
-engineers, unverified self-reported fields) — read that before trusting the
-output for anything real. There's a second, experimental scoring pass too
-(three axes instead of one blended number) — see "Two scoring passes, on
-purpose" below.
-
-## Why it's built this way
-
-- **Cheap/free**: GitHub's Search + REST API is free at the tier this needs
-  (5,000 authenticated requests/hour). No paid data vendor, no scraping
-  infrastructure.
-- **Defensible**: GitHub data is pulled through GitHub's own public API,
-  within its rate limits and terms of service — nothing here scrapes GitHub's
-  website. LinkedIn does **not** offer a public search API, and scraping it
-  violates LinkedIn's Terms of Service (and carries real legal risk — see
-  *hiQ Labs v. LinkedIn* for how contested this is even for "public" data).
-  So this project **never scrapes LinkedIn**. The LinkedIn path is a CSV
-  importer: in real use, that CSV is a manual export from a LinkedIn
-  Recruiter/Sales Navigator seat the requester is already licensed to use.
-  Since this proof of concept was built without such a seat, the included
-  `data/fake_linkedin_candidates.csv` is 100% invented — fictional names at
-  fictional companies (Acme Corp, Globex, Initech, Hooli...) — used only to
-  demonstrate the ingestion and scoring code path.
-- **Scalable**: sources are pluggable (`src/sourcing/*_source.py`), scoring
-  is a pure function over a common `Candidate` shape, and reqs are just YAML
-  files — add a req, run the CLI, get a ranked CSV.
-- **Well documented**: the full scoring rubric — the actual definition of
-  "qualified" used here — lives in [`SCORING.md`](SCORING.md), not buried in
-  code.
-
-## Quickstart
+| Skill match | 40 | Overlap with the req's `required_skills` |
+| Experience | 20 | Seniority vs `min_years_experience` |
+| Recency | 20 | Active and reachable now |
+| Location | 10 | Matches `location`, or 1.0 when `remote_ok` |
+| Corroboration | 10 | Bonus for appearing in more than one source |
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-pip install -e .   # installs the `sourcing` package so `python -m sourcing.cli` resolves
-
-cp .env.example .env
-# edit .env and set GITHUB_TOKEN (a classic PAT with no scopes needed for
-# public search is fine: https://github.com/settings/tokens)
-export GITHUB_TOKEN=...   # or pass --github-token directly
-
-python -m sourcing.cli \
-  --req reqs/example-backend-engineer.yaml \
-  --linkedin-csv data/fake_linkedin_candidates.csv \
-  --out out/backend-engineer-candidates.csv
+pytest -q     # 95 tests
 ```
-
-This prints a ranked table to the console and writes the full scorecard
-(every candidate, every sub-score, every reason) to the `--out` CSV.
-
-## Two scoring passes, on purpose
-
-This repo has **two independent scorers** you can run against the same req
-and candidates:
-
-- `sourcing.cli` / `SCORING.md` — the **traditional pass**: one blended
-  0–100 score per candidate.
-- `sourcing.cli_experimental` / `EXPERIMENTAL_SCORING.md` — the
-  **experimental pass**: three separate axes (Foundation / Bonus /
-  Momentum) instead of one number, and fixes a real bias in the
-  traditional pass — it no longer penalizes candidates for not already
-  being local (an unstated assumption they wouldn't relocate) or for a
-  quiet GitHub profile (which might just mean private-repo work or a
-  career break).
-
-They're kept as separate code paths deliberately, writing to separate
-output files, so you can compare them:
-
-```bash
-python -m sourcing.cli \
-  --req reqs/example-onsite-backend-engineer.yaml \
-  --linkedin-csv data/fake_linkedin_candidates.csv \
-  --out out/onsite-traditional.csv
-
-python -m sourcing.cli_experimental \
-  --req reqs/example-onsite-backend-engineer.yaml \
-  --linkedin-csv data/fake_linkedin_candidates.csv \
-  --out out/onsite-experimental.csv
-
-python -m sourcing.compare_passes \
-  --traditional-csv out/onsite-traditional.csv \
-  --experimental-csv out/onsite-experimental.csv \
-  --out out/onsite-comparison.csv
-```
-
-`compare_passes` reports rank movement and any `qualified` status flips
-between the two passes — that's where the two models disagree, and it's
-worth reading by hand. `reqs/example-onsite-backend-engineer.yaml` exists
-specifically to exercise this: it's not `remote_ok`, so it's the case
-where the traditional pass's location penalty actually fires.
-
-## Watch mode: this runs itself
-
-Everything above is one-shot: you run it, you get a CSV. `sourcing.watch` is
-the same pipeline wired to a scheduler, with state, so the repo tracks a req's
-candidate pool over time instead of forgetting it the moment the command
-exits.
-
-```bash
-python -m sourcing.watch \
-  --req reqs/example-backend-engineer.yaml \
-  --report-out out/watch-report.md
-```
-
-Each run:
-
-1. Gathers and scores candidates exactly like `sourcing.cli` (same shared
-   pipeline, `src/sourcing/pipeline.py` — they can't drift apart).
-2. Loads the last snapshot for this req from `data/snapshots/<req_id>/latest.json`.
-3. Diffs the two: new candidates, `qualified` flips in either direction,
-   candidates whose score moved by ≥5 points, and candidates that dropped
-   out of the results entirely.
-4. Writes the new snapshot back and a markdown report of what changed.
-
-`.github/workflows/watch.yml` schedules this for real, with zero paid
-infrastructure:
-
-- Runs weekly (`workflow_dispatch` for on-demand, `repository_dispatch` so an
-  external webhook can trigger a re-scan too) via GitHub Actions' free tier.
-- Loops over every req in `reqs/*.yaml`.
-- Commits the updated snapshots back to the repo — `git log data/snapshots/`
-  is the audit trail.
-- When something actually changed, opens (or comments on) a GitHub Issue
-  titled `Candidate pool watch: <req_id>` with the diff — that's the part a
-  human doesn't have to remember to check for.
-- A req that finds zero candidates in a given run (a narrow query is a
-  normal, expected outcome of GitHub's free-text user search, not a fault)
-  is logged as a warning and skipped, not treated as a failed run.
-
-This is the difference between "a script that makes a CSV" and a small
-pipeline: it has memory (the snapshots), a trigger it doesn't need a human to
-press (cron + webhook), and it takes action on what it finds (the Issue) —
-all inside GitHub's free tier.
-
-## Project layout
-
-```
-reqs/                    Open req definitions (YAML) — what "this job needs" means
-data/                    Synthetic demo data (fake LinkedIn export)
-data/snapshots/          Watch mode's state: one JSON snapshot per req, per run
-.github/workflows/
-  ci.yml                 Runs the test suite on every push/PR
-  watch.yml              Scheduled/webhook-triggered watch run (see "Watch mode" above)
-src/sourcing/
-  config.py              Loads/validates a req YAML into a Req object
-  candidate.py           The common Candidate shape both sources normalize into
-  github_source.py       Live GitHub Search API -> candidates
-  linkedin_source.py     CSV -> candidates (real export or synthetic demo file)
-  scoring.py             Traditional pass: Candidate + Req -> one blended score
-  scoring_experimental.py  Experimental pass: Candidate + Req -> 3 axis scores
-  pipeline.py            Shared gather-and-score pipeline used by cli.py and watch.py
-  store.py               Watch mode's snapshot persistence + diffing
-  cli.py                 Traditional pass entry point, writes ranked CSV
-  cli_experimental.py    Experimental pass entry point, writes ranked CSV
-  compare_passes.py      Diffs a traditional-pass CSV against an experimental one
-  watch.py               Scheduled entry point: score, diff vs. last snapshot, report
-tests/                   Unit tests (scoring is fully unit-testable, no network)
-SCORING.md               Traditional pass: the definition of "qualified", spelled out
-EXPERIMENTAL_SCORING.md  Experimental pass: the 3-axis model, spelled out
-```
-
-## Writing a real req
-
-Copy `reqs/example-backend-engineer.yaml` and edit the fields — see comments
-in that file. No code changes needed to source a new req.
-
-## Using real data instead of the demo
-
-- **GitHub**: already real and live — just set `GITHUB_TOKEN` and run it.
-  Respect GitHub's rate limits (the client backs off automatically on 403s).
-- **LinkedIn**: replace `data/fake_linkedin_candidates.csv` with an export
-  from your own LinkedIn Recruiter/Sales Navigator seat, matching the same
-  column headers (see `src/sourcing/linkedin_source.py` docstring). Do not
-  point this at scraped data — that's explicitly the one thing this project
-  is designed to avoid.
-
-## Limitations (read before trusting the output)
-
-- GitHub activity is a proxy for skill, not proof of it — it's biased toward
-  candidates who work in the open (open source, public side projects) and
-  against people who do all their work in private repos.
-- The scoring weights in `SCORING.md` are a starting point, not a validated
-  model. Tune them per role and sanity-check against a few candidates you
-  already know.
-- This is not a compliance/EEO tool. Don't use the score as the sole basis
-  for a hiring decision — it's a triage aid for building an outreach list.
-- GitHub's `search/users` free-text terms are AND'd against a user's
-  login/bio, so a req with several required skills can produce a genuinely
-  narrow query and return few or zero results some runs — that's a search
-  limitation, not a pipeline error (see "Watch mode" above for how the
-  scheduled run handles it).

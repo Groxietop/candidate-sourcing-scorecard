@@ -7,7 +7,7 @@ DATA_PATH = Path(__file__).parent.parent / "data" / "fake_linkedin_candidates.cs
 
 def test_loads_demo_csv():
     candidates = load_linkedin_candidates(DATA_PATH)
-    assert len(candidates) == 20
+    assert len(candidates) == 26
     alex = next(c for c in candidates if c.name == "Alex Rivera")
     assert "python" in alex.skills
     assert alex.years_experience == 7
@@ -28,3 +28,14 @@ def test_handles_blank_optional_fields():
     assert jordan.certifications is None
     assert jordan.open_source_contributor is False
     assert jordan.volunteer_experience is False
+
+
+def test_demo_csv_includes_sparse_profiles():
+    """Real recruiter exports have gaps, and the fixture has to as well.
+
+    A fixture where every scored field is populated cannot exercise the
+    CAVEATED tier at all, which is the behaviour this tool exists for.
+    """
+    candidates = load_linkedin_candidates(DATA_PATH)
+    assert any(c.years_experience is None for c in candidates)
+    assert any(not c.location for c in candidates)

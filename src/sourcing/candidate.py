@@ -22,6 +22,13 @@ class Candidate:
     github_handle: str | None = None  # used to corroborate across sources
     current_title: str | None = None  # LinkedIn only
 
+    # Free-text context for the reviewer. Not scored -- the rubric never
+    # reads prose -- but it is most of what a human actually wants to see
+    # before overruling a set-aside verdict.
+    bio: str | None = None
+    company: str | None = None
+    top_repos: list[str] = field(default_factory=list)
+
     # --- Fields below are only used by the experimental scorer (scoring_experimental.py). ---
     # They're additive/reward-only inputs, never gating — see EXPERIMENTAL_SCORING.md.
 
