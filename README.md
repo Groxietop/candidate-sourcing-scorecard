@@ -109,6 +109,23 @@ Each caveat names a specific, documented failure mode — not a hedge:
 > *"a quiet public profile can mean private-repo work, a career break,
 > parental leave, or simply not coding in public"*
 
+![Two candidates in the review queue, both scoring 59 points. Nadia Osei is Caveated at 80% measured with experience flagged as scored on guesswork; Finley Okonkwo is Set aside at 100% measured with an observed missing must-have.](docs/ui-caveated.png)
+
+**This is the entire argument in one screenshot.** Two candidates, both scoring
+**59** against a bar of 60.
+
+- **Nadia Osei** — 80% measured. The missing 20% is *experience*, and the
+  caveat says exactly why that matters: seniority is inferred from GitHub
+  account age, which says nothing about a veteran who opened an account last
+  year. She stays in the queue.
+- **Finley Okonkwo** — 100% measured. We observed the skill set and PostgreSQL
+  genuinely isn't in it. That is evidence, so this one is set aside — and even
+  then the caveat still runs, because public repos hide the skills people use
+  at work.
+
+Identical scores. Different amounts of *knowledge*. The old binary could not
+tell them apart and cut both.
+
 ### Try it
 
 ```bash
@@ -122,6 +139,13 @@ python -m sourcing.cli \
 There is also a **[working review-queue UI](https://claude.ai/code/artifact/f7ef6f6f-671f-444b-9d7e-d17ff3608233)** —
 job description, per-candidate profile detail, and Advance / Not-a-fit
 verdicts that persist and sync between viewers.
+
+![Review queue header: the job description the model scores against, the standing rule that a candidate is only set aside on positive evidence of a miss, and a scoreboard showing missed rate, precision, recall and candidates reviewed.](docs/ui-overview.png)
+
+*The scoreboard is computed from recorded verdicts. Before anyone decides
+anything it reads "no decisions yet" rather than a number — here it is showing
+five real verdicts. **Missed rate leads** because it is the number that gets
+worse when the tool becomes overconfident.*
 
 ---
 
