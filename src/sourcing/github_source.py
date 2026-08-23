@@ -242,8 +242,19 @@ class GitHubSource:
             )
             account_age_years = (dt.datetime.now(dt.timezone.utc) - created_dt).days / 365.25
 
+        # Most-starred owned repos, as reviewer context.
+        top_repos = [
+            f"{r['name']} ({r.get('stargazers_count', 0)}★)"
+            for r in sorted(
+                repos, key=lambda r: r.get("stargazers_count", 0), reverse=True
+            )[:5]
+        ]
+
         return Candidate(
             name=profile.get("name") or login,
+            bio=profile.get("bio"),
+            company=profile.get("company"),
+            top_repos=top_repos,
             source="github",
             profile_url=profile.get("html_url", f"https://github.com/{login}"),
             skills=skills,
