@@ -1,18 +1,16 @@
 # Candidate Sourcing Scorecard
 
-A sourcing tool built on one rule: **it is inexcusable to discard the dream
+A sourcing tool built on one core rule: **it is inexcusable to discard the dream
 candidate.** Everything below follows from that.
 
 ---
 
 ## 1. The problem
 
-Every automated screening tool ends the same way — a score, a threshold, a
-binary. Above the line you exist; below it you were never there. Nobody ever
+Most automated screening tools spit out a binary output. Above the line you exist; below it you were never there. Nobody
 sees who got cut, and nothing records why.
 
-That is tolerable when the score is right. The trouble is that a score built
-from data you don't have looks exactly like a score built from data you do.
+That is tolerable when the score is right. The trouble is that a score built from data you don't have looks exactly like a score built from data you do.
 
 Screening errors are also wildly asymmetric, and threshold tools treat them as
 if they weren't:
@@ -21,57 +19,9 @@ if they weren't:
 |---|---|
 | **False positive** — a mediocre candidate reaches a human | ~30 seconds of a recruiter's time |
 | **False negative** — the right person is silently removed | The hire that never happened. Nobody ever learns it went wrong. |
-
-A tool tuned to minimise total error will happily trade the second for the
-first. That is the wrong trade, and it is the default.
-
 ---
 
-## 2. The problem, concretely
-
-Here is the exact bug this repo had. From the original scorer:
-
-```python
-def _experience(candidate, req):
-    if candidate.years_experience is not None:
-        ...                       # measured
-    if candidate.account_age_years is not None:
-        ...                       # measured (a proxy)
-    return 0.5                    # "no experience signal available"
-```
-
-`_recency` and `_location` did the same thing. Then:
-
-```python
-qualified = total >= req.qualify_threshold
-```
-
-**`0.5` for "we have no idea" is indistinguishable from `0.5` for "we measured
-this and it's mediocre."** The threshold consumes both as if they were
-evidence.
-
-So take a real candidate: a senior backend engineer at a company with a strict
-IP policy. All their work is in private repos. No public activity, few stars,
-a thin account, no location on their profile.
-
-- experience → `0.5` (guess) → 10 pts
-- recency → `0.5` (guess) → 10 pts
-- location → `0.5` (guess) → 5 pts
-- corroboration → `0.0` → 0 pts
-
-They land in the 40s against a bar of 60 and are dropped — on a score that is
-**~60% guesswork**. Nobody is told. There is no record.
-
-That's the dream candidate, and the system was built to lose them.
-
-*(A second instance of the same failure, found while testing: SQL is not a
-GitHub language or a common repo topic, so it is nearly invisible in public
-data. The tool flagged Sebastian Raschka — who wrote the standard ML textbook —
-as "missing must-have: sql".)*
-
----
-
-## 3. The fix
+## 2. The fix
 
 ### Make "did we measure this?" a first-class fact
 
@@ -123,7 +73,7 @@ Each caveat names a specific, documented failure mode — not a hedge:
   then the caveat still runs, because public repos hide the skills people use
   at work.
 
-Identical scores. Different amounts of *knowledge*. The old binary could not
+Identical scores. Different amounts of *knowledge*. A binary system could not
 tell them apart and cut both.
 
 ### Try it
