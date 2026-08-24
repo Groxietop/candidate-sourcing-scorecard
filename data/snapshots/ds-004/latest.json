@@ -1,5 +1,15 @@
 {
   "candidates": {
+    "gh:3b1b": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Grant Sanderson",
+      "profile_url": "https://github.com/3b1b",
+      "qualified": true,
+      "score": 63.3,
+      "source": "github"
+    },
     "gh:521xueweihan": {
       "matched_skills": [
         "python"
@@ -7,46 +17,30 @@
       "name": "\u524a\u5fae\u5bd2",
       "profile_url": "https://github.com/521xueweihan",
       "qualified": true,
-      "score": 61.4,
+      "score": 63.3,
+      "source": "github"
+    },
+    "gh:asabeneh": {
+      "matched_skills": [
+        "python",
+        "pandas",
+        "sql"
+      ],
+      "name": "Asabeneh",
+      "profile_url": "https://github.com/Asabeneh",
+      "qualified": true,
+      "score": 83.3,
       "source": "github"
     },
     "gh:bregman-arie": {
       "matched_skills": [
         "python",
-        "docker",
-        "kubernetes",
-        "aws"
+        "sql"
       ],
       "name": "Arie Bregman",
       "profile_url": "https://github.com/bregman-arie",
       "qualified": true,
-      "score": 78.6,
-      "source": "github"
-    },
-    "gh:budtmo": {
-      "matched_skills": [
-        "python",
-        "postgresql",
-        "docker",
-        "kubernetes",
-        "aws"
-      ],
-      "name": "Budi Utomo",
-      "profile_url": "https://github.com/budtmo",
-      "qualified": true,
-      "score": 90.0,
-      "source": "github"
-    },
-    "gh:christianlempa": {
-      "matched_skills": [
-        "python",
-        "docker",
-        "kubernetes"
-      ],
-      "name": "Christian Lempa",
-      "profile_url": "https://github.com/ChristianLempa",
-      "qualified": true,
-      "score": 72.9,
+      "score": 76.7,
       "source": "github"
     },
     "gh:cyc2018": {
@@ -56,32 +50,20 @@
       "name": "CyC2018",
       "profile_url": "https://github.com/CyC2018",
       "qualified": false,
-      "score": 41.4,
+      "score": 43.3,
       "source": "github"
     },
     "gh:donnemartin": {
       "matched_skills": [
         "python",
-        "postgresql",
-        "aws"
+        "pandas",
+        "scikit-learn",
+        "sql"
       ],
       "name": "Donne Martin",
       "profile_url": "https://github.com/donnemartin",
       "qualified": true,
-      "score": 78.6,
-      "source": "github"
-    },
-    "gh:geerlingguy": {
-      "matched_skills": [
-        "python",
-        "postgresql",
-        "docker",
-        "kubernetes"
-      ],
-      "name": "Jeff Geerling",
-      "profile_url": "https://github.com/geerlingguy",
-      "qualified": true,
-      "score": 84.3,
+      "score": 90.0,
       "source": "github"
     },
     "gh:harry0703": {
@@ -91,20 +73,7 @@
       "name": "Harry",
       "profile_url": "https://github.com/harry0703",
       "qualified": true,
-      "score": 61.4,
-      "source": "github"
-    },
-    "gh:iam-veeramalla": {
-      "matched_skills": [
-        "python",
-        "docker",
-        "kubernetes",
-        "aws"
-      ],
-      "name": "Abhishek Veeramalla",
-      "profile_url": "https://github.com/iam-veeramalla",
-      "qualified": true,
-      "score": 78.6,
+      "score": 63.3,
       "source": "github"
     },
     "gh:justjavac": {
@@ -114,19 +83,7 @@
       "name": "\u8ff7\u6e21",
       "profile_url": "https://github.com/justjavac",
       "qualified": true,
-      "score": 61.4,
-      "source": "github"
-    },
-    "gh:khuedoan": {
-      "matched_skills": [
-        "python",
-        "docker",
-        "kubernetes"
-      ],
-      "name": "Khue Doan",
-      "profile_url": "https://github.com/khuedoan",
-      "qualified": true,
-      "score": 72.9,
+      "score": 63.3,
       "source": "github"
     },
     "gh:nvbn": {
@@ -136,17 +93,29 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 48.1,
+      "score": 50.0,
+      "source": "github"
+    },
+    "gh:ranaroussi": {
+      "matched_skills": [
+        "python",
+        "pandas"
+      ],
+      "name": "Ran Aroussi",
+      "profile_url": "https://github.com/ranaroussi",
+      "qualified": true,
+      "score": 70.0,
       "source": "github"
     },
     "gh:rasbt": {
       "matched_skills": [
-        "python"
+        "python",
+        "scikit-learn"
       ],
       "name": "Sebastian Raschka",
       "profile_url": "https://github.com/rasbt",
       "qualified": true,
-      "score": 61.4,
+      "score": 70.0,
       "source": "github"
     },
     "gh:shubhamsaboo": {
@@ -156,22 +125,44 @@
       "name": "Shubham Saboo",
       "profile_url": "https://github.com/Shubhamsaboo",
       "qualified": true,
-      "score": 61.4,
+      "score": 63.3,
+      "source": "github"
+    },
+    "gh:tarrysingh": {
+      "matched_skills": [
+        "python",
+        "pandas",
+        "scikit-learn"
+      ],
+      "name": "tarry.singh",
+      "profile_url": "https://github.com/TarrySingh",
+      "qualified": true,
+      "score": 76.7,
       "source": "github"
     },
     "gh:vinta": {
       "matched_skills": [
-        "python",
-        "docker",
-        "kubernetes"
+        "python"
       ],
       "name": "Vinta Chen",
       "profile_url": "https://github.com/vinta",
       "qualified": true,
-      "score": 72.9,
+      "score": 63.3,
+      "source": "github"
+    },
+    "gh:yorko": {
+      "matched_skills": [
+        "python",
+        "pandas",
+        "scikit-learn"
+      ],
+      "name": "Yury Kashnitsky",
+      "profile_url": "https://github.com/Yorko",
+      "qualified": true,
+      "score": 76.7,
       "source": "github"
     }
   },
-  "generated_at": "2026-08-24T14:04:21.882771+00:00",
-  "req_id": "eng-backend-001"
+  "generated_at": "2026-08-24T14:04:35.569911+00:00",
+  "req_id": "ds-004"
 }
