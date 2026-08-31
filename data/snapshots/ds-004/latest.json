@@ -93,7 +93,7 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 50.0,
+      "score": 49.8,
       "source": "github"
     },
     "gh:ranaroussi": {
@@ -163,6 +163,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-08-24T14:04:35.569911+00:00",
+  "generated_at": "2026-08-31T19:31:20.479648+00:00",
   "req_id": "ds-004"
 }

@@ -136,7 +136,7 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 38.1,
+      "score": 37.9,
       "source": "github"
     },
     "gh:rasbt": {
@@ -172,6 +172,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-08-24T14:04:47.816936+00:00",
+  "generated_at": "2026-08-31T19:31:34.074357+00:00",
   "req_id": "eng-backend-onsite-001"
 }
