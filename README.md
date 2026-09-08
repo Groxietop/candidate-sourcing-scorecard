@@ -3,12 +3,6 @@
 A sourcing triage tool built on one rule: a candidate is only ever set aside
 on positive evidence of a miss, never on missing evidence.
 
-Most automated screening produces a binary, and a score built on data you
-don't have looks identical to one built on data you do. The errors aren't
-symmetric either — a mediocre candidate reaching a human costs 30 seconds,
-while the right person being silently removed costs the hire and nobody finds
-out.
-
 ## How it works
 
 Every scoring category carries its value plus an observed/imputed flag
@@ -30,7 +24,7 @@ reasoning so you can overrule them.
 
 ![Two candidates in the review queue, both scoring 59. One is Caveated at 80% measured; the other Set aside at 100% measured with an observed missing must-have.](docs/ui-caveated.png)
 
-Both score 59 against a bar of 60. Nadia is 80% measured — the missing fifth
+Both score 59 against a bar of 60. Nadia is 80% measured: the missing fifth
 is experience, inferred from GitHub account age, which says nothing about a
 veteran who made an account last year, so she stays. Finley is 100% measured:
 the skill set was visible and PostgreSQL wasn't in it. Same score, different
