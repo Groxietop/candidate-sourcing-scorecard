@@ -93,18 +93,17 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 49.5,
+      "score": 49.2,
       "source": "github"
     },
-    "gh:ranaroussi": {
+    "gh:panniantong": {
       "matched_skills": [
-        "python",
-        "pandas"
+        "python"
       ],
-      "name": "Ran Aroussi",
-      "profile_url": "https://github.com/ranaroussi",
+      "name": "Pnant",
+      "profile_url": "https://github.com/Panniantong",
       "qualified": true,
-      "score": 70.0,
+      "score": 63.0,
       "source": "github"
     },
     "gh:rasbt": {
@@ -163,6 +162,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-09-07T18:16:03.904541+00:00",
+  "generated_at": "2026-09-14T18:39:50.676368+00:00",
   "req_id": "ds-004"
 }
