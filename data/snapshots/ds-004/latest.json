@@ -93,7 +93,7 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 49.2,
+      "score": 49.0,
       "source": "github"
     },
     "gh:panniantong": {
@@ -162,6 +162,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-09-14T18:39:50.676368+00:00",
+  "generated_at": "2026-09-21T18:44:34.580221+00:00",
   "req_id": "ds-004"
 }
