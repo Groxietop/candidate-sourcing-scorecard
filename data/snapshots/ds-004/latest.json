@@ -93,7 +93,7 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 49.0,
+      "score": 48.7,
       "source": "github"
     },
     "gh:panniantong": {
@@ -103,7 +103,7 @@
       "name": "Pnant",
       "profile_url": "https://github.com/Panniantong",
       "qualified": true,
-      "score": 63.0,
+      "score": 63.1,
       "source": "github"
     },
     "gh:rasbt": {
@@ -127,16 +127,14 @@
       "score": 63.3,
       "source": "github"
     },
-    "gh:tarrysingh": {
+    "gh:unclecode": {
       "matched_skills": [
-        "python",
-        "pandas",
-        "scikit-learn"
+        "python"
       ],
-      "name": "tarry.singh",
-      "profile_url": "https://github.com/TarrySingh",
+      "name": "UncleCode",
+      "profile_url": "https://github.com/unclecode",
       "qualified": true,
-      "score": 76.7,
+      "score": 63.3,
       "source": "github"
     },
     "gh:vinta": {
@@ -162,6 +160,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-09-21T18:44:34.580221+00:00",
+  "generated_at": "2026-09-28T20:08:14.482556+00:00",
   "req_id": "ds-004"
 }
