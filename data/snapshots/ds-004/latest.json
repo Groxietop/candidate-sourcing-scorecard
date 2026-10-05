@@ -32,17 +32,6 @@
       "score": 83.3,
       "source": "github"
     },
-    "gh:bregman-arie": {
-      "matched_skills": [
-        "python",
-        "sql"
-      ],
-      "name": "Arie Bregman",
-      "profile_url": "https://github.com/bregman-arie",
-      "qualified": true,
-      "score": 76.7,
-      "source": "github"
-    },
     "gh:cyc2018": {
       "matched_skills": [
         "python"
@@ -51,6 +40,16 @@
       "profile_url": "https://github.com/CyC2018",
       "qualified": false,
       "score": 43.3,
+      "source": "github"
+    },
+    "gh:d4vinci": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Karim shoair",
+      "profile_url": "https://github.com/D4Vinci",
+      "qualified": true,
+      "score": 63.3,
       "source": "github"
     },
     "gh:donnemartin": {
@@ -93,7 +92,7 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 48.7,
+      "score": 48.5,
       "source": "github"
     },
     "gh:panniantong": {
@@ -160,6 +159,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-09-28T20:08:14.482556+00:00",
+  "generated_at": "2026-10-05T21:12:39.461487+00:00",
   "req_id": "ds-004"
 }
