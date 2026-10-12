@@ -92,7 +92,7 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 48.5,
+      "score": 48.2,
       "source": "github"
     },
     "gh:panniantong": {
@@ -102,7 +102,7 @@
       "name": "Pnant",
       "profile_url": "https://github.com/Panniantong",
       "qualified": true,
-      "score": 63.1,
+      "score": 63.2,
       "source": "github"
     },
     "gh:rasbt": {
@@ -159,6 +159,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-10-05T21:12:39.461487+00:00",
+  "generated_at": "2026-10-12T21:45:25.529420+00:00",
   "req_id": "ds-004"
 }
