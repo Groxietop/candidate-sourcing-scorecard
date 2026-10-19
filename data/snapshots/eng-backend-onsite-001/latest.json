@@ -129,14 +129,14 @@
       "score": 67.9,
       "source": "github"
     },
-    "gh:nvbn": {
+    "gh:panniantong": {
       "matched_skills": [
         "python"
       ],
-      "name": "Vladimir Iakovlev",
-      "profile_url": "https://github.com/nvbn",
+      "name": "Pnant",
+      "profile_url": "https://github.com/Panniantong",
       "qualified": false,
-      "score": 36.3,
+      "score": 56.3,
       "source": "github"
     },
     "gh:rasbt": {
@@ -170,6 +170,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-10-12T21:45:39.725638+00:00",
+  "generated_at": "2026-10-19T19:21:31.003755+00:00",
   "req_id": "eng-backend-onsite-001"
 }
