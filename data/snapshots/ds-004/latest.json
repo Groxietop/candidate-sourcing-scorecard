@@ -38,8 +38,8 @@
       ],
       "name": "CyC2018",
       "profile_url": "https://github.com/CyC2018",
-      "qualified": false,
-      "score": 43.3,
+      "qualified": true,
+      "score": 63.3,
       "source": "github"
     },
     "gh:d4vinci": {
@@ -92,7 +92,7 @@
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
       "qualified": false,
-      "score": 48.0,
+      "score": 47.7,
       "source": "github"
     },
     "gh:panniantong": {
@@ -102,7 +102,7 @@
       "name": "Pnant",
       "profile_url": "https://github.com/Panniantong",
       "qualified": true,
-      "score": 63.2,
+      "score": 63.3,
       "source": "github"
     },
     "gh:rasbt": {
@@ -159,6 +159,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-10-19T19:21:17.737387+00:00",
+  "generated_at": "2026-10-26T19:21:27.573432+00:00",
   "req_id": "ds-004"
 }

@@ -55,8 +55,8 @@
       ],
       "name": "CyC2018",
       "profile_url": "https://github.com/CyC2018",
-      "qualified": false,
-      "score": 41.4,
+      "qualified": true,
+      "score": 61.4,
       "source": "github"
     },
     "gh:donnemartin": {
@@ -136,7 +136,7 @@
       "name": "Pnant",
       "profile_url": "https://github.com/Panniantong",
       "qualified": true,
-      "score": 61.3,
+      "score": 61.4,
       "source": "github"
     },
     "gh:rasbt": {
@@ -170,6 +170,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-10-19T19:21:02.102849+00:00",
+  "generated_at": "2026-10-26T19:21:08.964699+00:00",
   "req_id": "eng-backend-001"
 }
