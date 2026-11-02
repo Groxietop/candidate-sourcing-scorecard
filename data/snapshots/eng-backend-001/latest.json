@@ -129,22 +129,22 @@
       "score": 72.9,
       "source": "github"
     },
+    "gh:morluto": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "morluto",
+      "profile_url": "https://github.com/morluto",
+      "qualified": true,
+      "score": 61.1,
+      "source": "github"
+    },
     "gh:panniantong": {
       "matched_skills": [
         "python"
       ],
       "name": "Pnant",
       "profile_url": "https://github.com/Panniantong",
-      "qualified": true,
-      "score": 61.4,
-      "source": "github"
-    },
-    "gh:rasbt": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "Sebastian Raschka",
-      "profile_url": "https://github.com/rasbt",
       "qualified": true,
       "score": 61.4,
       "source": "github"
@@ -170,6 +170,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-10-26T19:21:08.964699+00:00",
+  "generated_at": "2026-11-02T22:20:16.938127+00:00",
   "req_id": "eng-backend-001"
 }

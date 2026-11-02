@@ -85,14 +85,24 @@
       "score": 63.3,
       "source": "github"
     },
+    "gh:morluto": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "morluto",
+      "profile_url": "https://github.com/morluto",
+      "qualified": true,
+      "score": 63.0,
+      "source": "github"
+    },
     "gh:nvbn": {
       "matched_skills": [
         "python"
       ],
       "name": "Vladimir Iakovlev",
       "profile_url": "https://github.com/nvbn",
-      "qualified": false,
-      "score": 47.7,
+      "qualified": true,
+      "score": 63.3,
       "source": "github"
     },
     "gh:panniantong": {
@@ -126,16 +136,6 @@
       "score": 63.3,
       "source": "github"
     },
-    "gh:unclecode": {
-      "matched_skills": [
-        "python"
-      ],
-      "name": "UncleCode",
-      "profile_url": "https://github.com/unclecode",
-      "qualified": true,
-      "score": 63.3,
-      "source": "github"
-    },
     "gh:vinta": {
       "matched_skills": [
         "python"
@@ -159,6 +159,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-10-26T19:21:27.573432+00:00",
+  "generated_at": "2026-11-02T22:20:32.211634+00:00",
   "req_id": "ds-004"
 }
