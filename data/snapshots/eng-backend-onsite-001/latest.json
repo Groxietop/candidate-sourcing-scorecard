@@ -117,18 +117,6 @@
       "score": 51.4,
       "source": "github"
     },
-    "gh:khuedoan": {
-      "matched_skills": [
-        "python",
-        "docker",
-        "kubernetes"
-      ],
-      "name": "Khue Doan",
-      "profile_url": "https://github.com/khuedoan",
-      "qualified": true,
-      "score": 67.9,
-      "source": "github"
-    },
     "gh:morluto": {
       "matched_skills": [
         "python"
@@ -136,7 +124,7 @@
       "name": "morluto",
       "profile_url": "https://github.com/morluto",
       "qualified": false,
-      "score": 51.1,
+      "score": 51.2,
       "source": "github"
     },
     "gh:panniantong": {
@@ -145,6 +133,16 @@
       ],
       "name": "Pnant",
       "profile_url": "https://github.com/Panniantong",
+      "qualified": false,
+      "score": 56.4,
+      "source": "github"
+    },
+    "gh:rasbt": {
+      "matched_skills": [
+        "python"
+      ],
+      "name": "Sebastian Raschka",
+      "profile_url": "https://github.com/rasbt",
       "qualified": false,
       "score": 56.4,
       "source": "github"
@@ -170,6 +168,6 @@
       "source": "github"
     }
   },
-  "generated_at": "2026-11-02T22:20:47.190459+00:00",
+  "generated_at": "2026-11-09T23:00:32.874707+00:00",
   "req_id": "eng-backend-onsite-001"
 }
